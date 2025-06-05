@@ -1,0 +1,33 @@
+---
+- name: ensure users are present
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    state: present
+    shell: /bin/bash
+  with_items: "{{ users_present }}"
+  register: created_users
+
+- name: set authorized keys for present users
+  become: yes
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+  with_items: "{{ users_present }}"
+  when: item.ssh_key is defined
+
+- name: disable users
+  become: yes
+  user:
+    name: "{{ item }}"
+    state: present
+    shell: /usr/sbin/nologin
+  with_items: "{{ users_disabled }}"
+
+- name: remove users
+  become: yes
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: yes
+  with_items: "{{ users_absent }}"

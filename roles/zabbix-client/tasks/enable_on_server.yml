@@ -1,7 +1,7 @@
 ---
 # Enable Zabbix agent that runs on on server
 
-- include: pre_requisites.yml
+- include_tasks: pre_requisites.yml
 
 - name: enable Zabbix host
   connection: "{{ zabbix_api_connection_method }}"

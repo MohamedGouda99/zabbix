@@ -8,6 +8,22 @@ remote_home_dir:            "{{ ansible_env[ 'HOME' ] }}"
 
 download_cache:             "download.cache"
 
+ci_testing:                False
+
+# ansible-pull configuration
+ansible_pull_repo: https://github.com/example/repo.git
+ansible_pull_branch: main
+ansible_pull_frequency: '1h'
+
+# user management lists
+users_present: []
+users_absent: []
+users_disabled: []
+
+# zabbix proxy connection info
+zabbix_proxy_server: localhost
+zabbix_proxy_db_pass: CHANGE-ME:zabbix-password
+
 # -------------------------------------------------------------
 
 zabbix_server_username:     "Admin"

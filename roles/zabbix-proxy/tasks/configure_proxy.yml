@@ -1,0 +1,16 @@
+---
+- name: configure zabbix proxy
+  become: yes
+  lineinfile:
+    path: /etc/zabbix/zabbix_proxy.conf
+    regexp: '^{{ item.key }}='
+    line: '{{ item.key }}={{ item.value }}'
+  with_items:
+    - { key: DBName, value: "{{ zabbix_proxy_db_name }}" }
+    - { key: DBUser, value: "{{ zabbix_proxy_db_user }}" }
+    - { key: DBPassword, value: "{{ zabbix_proxy_db_pass }}" }
+    - { key: Server, value: "{{ zabbix_proxy_server }}" }
+    - { key: Hostname, value: "{{ zabbix_proxy_hostname }}" }
+  notify:
+    - restart zabbix proxy
+    - restart zabbix agent
