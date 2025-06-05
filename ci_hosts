@@ -1,0 +1,5 @@
+[zabbix_server]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
+
+[zabbix_agent]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3

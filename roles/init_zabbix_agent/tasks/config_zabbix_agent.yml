@@ -3,5 +3,5 @@
   template: src=zabbix_agentd.conf dest={{zabbix_conf_path}} mode="u=rw,g=r,o=r"
 
 - name: Init Script
-  include: init_script.yml
+  import_tasks: init_script.yml
   when: need_script
