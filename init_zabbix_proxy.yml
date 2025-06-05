@@ -1,0 +1,12 @@
+---
+- name: Init Zabbix Proxy
+  hosts: zabbix_proxy
+  vars_files:
+    - vars/zabbix_basic.yml
+    - vars/zabbix_proxy.yml
+  user: root
+  roles:
+    - mariadb
+    - zabbix_proxy
+    - init_zabbix_agent
+    - users

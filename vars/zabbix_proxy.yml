@@ -1,0 +1,6 @@
+---
+# MariaDB credentials
+zabbix_db: zabbix
+zabbix_db_user: zabbix
+zabbix_db_password: zabbix
+zabbix_db_host: localhost

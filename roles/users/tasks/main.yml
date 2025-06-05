@@ -1,0 +1,28 @@
+---
+- name: Add users
+  user:
+    name: "{{ item.name }}"
+    state: present
+    groups: "{{ 'sudo' if item.sudo | default(false) else '' }}"
+    create_home: yes
+  with_items: "{{ users_add | default([]) }}"
+
+- name: Deploy SSH keys for new users
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ item.ssh_key }}"
+  with_items: "{{ users_add | default([]) }}"
+  when: item.ssh_key is defined
+
+- name: Disable users
+  user:
+    name: "{{ item }}"
+    password_lock: yes
+  with_items: "{{ users_disable | default([]) }}"
+
+- name: Remove users
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: yes
+  with_items: "{{ users_remove | default([]) }}"

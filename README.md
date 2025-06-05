@@ -1,5 +1,5 @@
 # zabbix-ansible
-1. Install zabbix server and agent in Centos 7.x
+1. Install Zabbix server and agent on CentOS 7.x or Ubuntu 24.04
 2. Make sure close selinux
 3. Use postgres as the zabbix database 
 4. Agent default is active mode
@@ -14,9 +14,11 @@ zabbix_user: zabbix
 zabbix_group: zabbix
 
 #rpm key of zabbix
-zabbix_key_url: "http://repo.zabbix.com/RPM-GPG-KEY-ZABBIX"
+zabbix_key_url: "https://repo.zabbix.com/zabbix-official-repo.key"
 #rpm of zabbix
 zabbix_rpm_url: "http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-2.el7.noarch.rpm" # this is the zabbix version 3.4.2 is the latest version
+zabbix_apt_release: "{{ 'jammy' if ansible_distribution_release == 'noble' else ansible_distribution_release }}"
+zabbix_apt_repo: "deb https://repo.zabbix.com/zabbix/7.0/ubuntu {{ zabbix_apt_release }} main"
 
 # service port
 service_ports:
@@ -171,5 +173,14 @@ Now you can run like:
 ansible-playbook -i hosts init_zabbix_agent.yml
 ```
 
+## Install Zabbix Proxy
+Update `vars/zabbix_proxy.yml` to set your MariaDB credentials, then run:
+
+```
+ansible-playbook -i hosts init_zabbix_proxy.yml
+```
+
+The proxy installs MariaDB 11.4, creates the Zabbix database and user, and starts the proxy and agent services.
+
 ## License
-source code is licensed under the Apache Licence, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0.html).
+Source code is licensed under the Apache Licence, Version 2.0 (<http://www.apache.org/licenses/LICENSE-2.0.html>).
