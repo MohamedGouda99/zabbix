@@ -1,0 +1,32 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Add Zabbix apt key
+  apt_key:
+    url: "{{ zabbix_key_url }}"
+    state: present
+
+- name: Add Zabbix repository
+  apt_repository:
+    repo: "{{ zabbix_apt_repo }}"
+    state: present
+
+- name: Install Zabbix packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ zabbix_server_install }}"
+
+- name: Install python expect
+  pip:
+    name: pexpect
+
+- name: Init Zabbix Server Postgres Database
+  expect:
+    command: /bin/bash -c "zcat /usr/share/doc/zabbix-server-pgsql*/create.sql.gz | psql -U {{db_user}} -h {{db_host}} {{db_name}}"
+    responses:
+      (?i)Password: '{{db_password}}'
+  when: "db_type == 'postgres'"

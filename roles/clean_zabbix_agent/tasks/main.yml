@@ -1,6 +1,10 @@
 ---
 - name: Redhat
-  include: redhat_agent.yml
+  import_tasks: redhat_agent.yml
   when: ansible_os_family == 'RedHat'
+
+- name: Debian
+  import_tasks: debian_agent.yml
+  when: ansible_os_family == 'Debian'
 
 
