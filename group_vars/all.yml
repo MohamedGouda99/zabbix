@@ -8,6 +8,8 @@ remote_home_dir:            "{{ ansible_env[ 'HOME' ] }}"
 
 download_cache:             "download.cache"
 
+ci_testing:                False
+
 # -------------------------------------------------------------
 
 zabbix_server_username:     "Admin"

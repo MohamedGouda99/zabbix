@@ -12,21 +12,20 @@ Automate the installation of Zabbix server, agents and plugins:
 
 1. Install Ansible ([instructions](http://docs.ansible.com/intro_installation.html))
 1. Get the playbook from the GitHub repository
-1. Create [inventory](http://docs.ansible.com/intro_inventory.html) file from [this template](hosts.empty) and add the Zabbix hosts
+1. The repository now includes a basic local inventory in **hosts**.  If you need to target remote machines update this file accordingly.
+1. In CI runs the playbook sets `ci_testing=true` to skip repository downloads.
 
 ```
 > cat hosts
 
-...
+[all:vars]
+ansible_connection=local
+
 [zabbix-server]
-zabbix-server.example.com
+localhost
 
-[zabbix-client:children]
-
-[zabbiz-client-only]
-zabbix-client-1.example.com
-zabbix-client-2.example.com
-zabbix-client-3.example.com
+[zabbix-client]
+localhost
 ```
 
 ### Zabbix server deployment
