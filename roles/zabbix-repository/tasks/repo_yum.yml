@@ -1,0 +1,9 @@
+---
+# Zabbix Official package repository
+
+# -------------------------------------------------------------
+#  2. install package with Zabbix repo configuration
+
+- name: install rpm package with Zabbix repo configuration
+  become: yes
+  yum: name="{{ zabbix_repo_package }}" state=present update_cache=yes

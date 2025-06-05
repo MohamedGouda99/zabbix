@@ -1,0 +1,38 @@
+---
+# Install Zabbix agent from yum repo repository
+
+# -------------------------------------------------------------
+#  remove stale version
+
+- name: remove stale Zabbix agent
+  become: yes
+  yum: name={{ item }} state=absent
+  with_items: "{{ zabbix_packages }}"
+  when: "{{ zabbix_remove_stale_version | bool }}"
+
+- name: remove stale files from previous installation (if any)
+  become: yes
+  file: name="{{ item }}" state=absent
+  with_items: "{{ zabbix_stale_files }}"
+  when: "{{ zabbix_remove_stale_version | bool }}"
+
+# -------------------------------------------------------------
+#  install new package
+
+- name: install Zabbix agent packages
+  become: yes
+  yum:  name="{{ item }}={{ zabbix_package_version }}" state=present
+  with_items: "{{ zabbix_packages }}"
+  when: "{{ zabbix_package_version != 'latest' }}"
+  notify:
+    - enable zabbix agent
+    - start zabbix agent
+
+- name: install Zabbix agent packages (latest version)
+  become: yes
+  yum:  name="{{ item }}" state=latest
+  with_items: "{{ zabbix_packages }}"
+  when: "{{ zabbix_package_version == 'latest' }}"
+  notify:
+    - enable zabbix agent
+    - start zabbix agent

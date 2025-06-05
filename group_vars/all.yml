@@ -1,0 +1,14 @@
+---
+
+from_cache:                 False
+
+home_dir:                   "{{ lookup('env','HOME')  }}"
+current_dir:                "{{ lookup('env','PWD')   }}"
+remote_home_dir:            "{{ ansible_env[ 'HOME' ] }}"
+
+download_cache:             "download.cache"
+
+# -------------------------------------------------------------
+
+zabbix_server_username:     "Admin"
+zabbix_server_password:     "zabbix"

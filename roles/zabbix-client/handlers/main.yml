@@ -1,0 +1,13 @@
+---
+
+- name: enable zabbix agent
+  become: yes
+  service: name={{ zabbix_service_name }} enabled=yes
+
+- name: start zabbix agent
+  become: yes
+  service: name={{ zabbix_service_name }} state=started
+
+- name: restart zabbix agent
+  become: yes
+  service: name={{ zabbix_service_name }} state=restarted

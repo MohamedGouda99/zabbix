@@ -1,0 +1,17 @@
+---
+# Bootstrapping Ansible for remote execution
+
+- name: install Ansible required package (apt)
+  become: yes
+  apt: name="{{ ansible_required_package }}"
+  when: "{{ ansible_pkg_mgr == 'apt' }}"
+
+- name: install Ansible required package (yum)
+  become: yes
+  yum: name="{{ ansible_required_package }}" state=present
+  when: "{{ ansible_pkg_mgr == 'yum' }}"
+
+- name: install Ansible required package (dnf)
+  become: yes
+  dnf: name="{{ ansible_required_package }}" state=present
+  when: "{{ ansible_pkg_mgr == 'dnf' }}"

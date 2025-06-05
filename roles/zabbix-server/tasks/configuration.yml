@@ -1,0 +1,48 @@
+---
+# Configure Zabbix server
+
+# -------------------------------------------------------------
+#  Zabbix Server
+
+- name: customize Zabbix configuration file
+  become: yes
+  lineinfile: dest={{ zabbix_server_conf_file }}
+              regexp="^[#\s]*{{ item.key }}\s*="
+              line="{{ item.key }}={{ item.value }}"
+  with_dict: "{{ zabbix_config_params }}"
+  notify:
+    - restart zabbix server
+    - restart zabbix frontend server
+
+- name: enable and define timezone in Zabbix frontend configuration file
+  become: yes
+  replace: dest={{ zabbix_frontend_conf_file }}
+              regexp="#\s*php_value\s*date.timezone.+$"
+              replace="php_value date.timezone {{ zabbix_timezone }}"
+              backup=yes
+  register: zabbix_timezone_enabled
+  notify:
+    - restart zabbix frontend server
+
+# -------------------------------------------------------------
+#  JMX Gateway
+
+- name: customize Zabbix configuration file (JMX gateway)
+  become: yes
+  lineinfile: dest={{ zabbix_server_conf_file }}
+              regexp="^[#\s]*{{ item.key }}\s*="
+              line="{{ item.key }}={{ item.value }}"
+  with_dict: "{{ zabbix_jmx_gateway_config_params }}"
+  when: "{{ zabbix_jmx_gateway | bool }}"
+  notify:
+    - restart zabbix server
+
+- name: customize JMX Gateway configuration file
+  become: yes
+  lineinfile: dest={{ jmx_gateway_conf_file }}
+              regexp="^[#\s]*{{ item.key }}\s*="
+              line="{{ item.key }}={{ item.value }}"
+  with_dict: "{{ jmx_gateway_config_params }}"
+  when: "{{ zabbix_jmx_gateway | bool }}"
+  notify:
+    - restart jmx gateway

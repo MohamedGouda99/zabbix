@@ -1,8 +1,0 @@
----
-- name: Stop Zabbix Agent
-  systemd: name={{zabbix_agent_service}}  state=stopped
-  ignore_errors: true
-
-- name: Remove Zabbix
-  yum: name=zabbix* state=absent
-

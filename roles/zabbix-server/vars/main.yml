@@ -1,0 +1,72 @@
+---
+
+zabbix_package_version:               "latest"
+zabbix_packages:
+  - zabbix-server-mysql
+  - zabbix-frontend-php
+  - snmp
+  - php5-ldap
+
+jmx_gateway_packages:
+  - zabbix-java-gateway
+
+zabbix_service_name:                  "zabbix-server"
+zabbix_frontend_service_name:         "apache2"
+jmx_gateway_service_name:             "zabbix-java-gateway"
+
+# -------------------------------------------------------------
+#  mysql database statements
+
+mysql_ansible_package_by_os:
+  Ubuntu:       python-mysqldb
+  Debian:       python-mysqldb
+  RHEL:         MySQL-python
+  CentOS:       MySQL-python
+
+mysql_ansible_package:  "{{ mysql_ansible_package_by_os[ ansible_distribution ] | default('') }}"
+
+mysql_root_password:            "CHANGE-ME:zabbix-root-password"
+mysql_zabbix_username:          "zabbix"
+mysql_zabbix_password:          "CHANGE-ME:zabbix-mysql-password"
+mysql_zabbix_database:          "zabbix"
+
+mysql_charset:                  utf8
+mysql_collation:                utf8_bin
+
+# mysql_schema_script:            "/usr/share/doc/zabbix-server-mysql/create.sql.gz"
+mysql_schema_script:            "create.sql"
+
+# TODO: Ansible bug
+#  ref: http://stackoverflow.com/questions/36770317/why-is-my-mysql-import-failing-w-ansible
+#  ref: https://blog.nelhage.com/2010/02/a-very-subtle-bug/
+#  ref: https://github.com/ansible/ansible-modules-core/commit/1e2ce363f754e34ee0968897cf26d4de1fa1fd4b
+#
+# mysql_schema_script:            "create.sql"
+
+# configuration file parameters ---------------------------------------
+
+zabbix_server_conf_file:            "/etc/zabbix/zabbix_server.conf"
+zabbix_frontend_conf_file:          "/etc/apache2/conf-enabled/zabbix.conf"
+jmx_gateway_conf_file:              "/etc/zabbix/zabbix_java_gateway.conf"
+
+zabbix_logsize:                     128
+
+jmx_listen_port:                    10052
+jmx_num_of_pollers:                 3
+
+zabbix_config_params:
+    "LogFileSize":                  "{{ zabbix_logsize }}"
+    "DBHost":                       "localhost"
+    "DBName":                       "{{ mysql_zabbix_database }}"
+    "DBUser":                       "{{ mysql_zabbix_username }}"
+    "DBPassword":                   "{{ mysql_zabbix_password }}"
+
+jmx_gateway_config_params:
+    "LISTEN_IP":                    "127.0.0.1"
+    "LISTEN_PORT":                  "{{ jmx_listen_port }}"
+    "START_POLLERS":                "{{ jmx_num_of_pollers }}"
+
+zabbix_jmx_gateway_config_params:
+    "JavaGateway":                  "127.0.0.1"
+    "JavaGatewayPort":              "{{ jmx_listen_port }}"
+    "StartJavaPollers":             "{{ jmx_num_of_pollers }}"

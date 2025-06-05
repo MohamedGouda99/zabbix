@@ -1,0 +1,21 @@
+---
+
+- name: enable zabbix server
+  become: yes
+  service: name={{ zabbix_service_name }} enabled=yes
+
+- name: start zabbix server
+  become: yes
+  service: name={{ zabbix_service_name }} state=started
+
+- name: restart zabbix server
+  become: yes
+  service: name={{ zabbix_service_name }} state=restarted
+
+- name: restart zabbix frontend server
+  become: yes
+  service: name={{ zabbix_frontend_service_name }} state=restarted
+
+- name: restart jmx gateway
+  become: yes
+  service: name={{ jmx_gateway_service_name }} state=restarted

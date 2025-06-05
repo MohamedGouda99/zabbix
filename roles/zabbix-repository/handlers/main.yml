@@ -1,0 +1,7 @@
+---
+
+# -------------------------------------------------------------
+#  3. clean
+
+- name: clean up package with Zabbix repo configuration
+  file: name="{{ zabbix_repo_package }}" state=absent

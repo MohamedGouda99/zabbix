@@ -1,0 +1,15 @@
+---
+# Enable Zabbix agent that runs on on server
+
+- include: pre_requisites.yml
+
+- name: enable Zabbix host
+  connection: "{{ zabbix_api_connection_method }}"
+  run_once: True
+  zabbix_host:  host_name="Zabbix server"
+                server_url="http://{{ ansible_fqdn }}/zabbix"
+                login_user="{{ zabbix_server_username }}"
+                login_password="{{ zabbix_server_password }}"
+                host_groups="{{ [ zabbix_servers_host_group ] }}"
+                link_templates="{{ zabbix_server_templates }}"
+                status=enabled

@@ -1,0 +1,28 @@
+---
+# Pre-requisites to execute Ansible zabbix* modules
+
+# -------------------------------------------------------------
+#  install packages from repo
+
+- name: install required packages for Ansible zabbix modules (apt)
+  become: yes
+  apt: name={{ item }} state=latest
+  with_items: "{{ ansible_required_packages }}"
+  when: "{{ ansible_pkg_mgr == 'apt' }}"
+
+- name: install required packages for Ansible zabbix modules (yum)
+  become: yes
+  yum: name={{ item }} state=latest
+  with_items: "{{ ansible_required_packages }}"
+  when: "{{ ansible_pkg_mgr == 'yum' }}"
+
+- name: install required packages for Ansible zabbix modules (dnf)
+  become: yes
+  dnf: name={{ item }} state=latest
+  with_items: "{{ ansible_required_packages }}"
+  when: "{{ ansible_pkg_mgr == 'dnf' }}"
+
+# -------------------------------------------------------------
+#  install packages with python-pip
+
+- include: install_packages_pip.yml

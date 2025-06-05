@@ -1,0 +1,5 @@
+## zabbix
+Defaults:zabbix !requiretty
+
+# Allow zabbix to restart services
+zabbix ALL=NOPASSWD: /sbin/service, /usr/bin/docker

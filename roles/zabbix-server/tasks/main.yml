@@ -1,0 +1,20 @@
+---
+# Install Zabbix server
+
+- include: install_deb_from_repo.yml
+  when: "{{ ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo' }}"
+
+- include: install_from_yum_repo.yml
+  when: "{{ ansible_pkg_mgr == 'yum' and zabbix_installation_method == 'repo' }}"
+
+# -------------------------------------------------------------
+#  Zabbix JMX Gateway
+
+- include: install_deb_from_repo.yml zabbix_packages="{{ jmx_gateway_packages }}" zabbix_stale_files="{{ jmx_stale_files }}"
+  when: "{{ zabbix_jmx_gateway and ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo' }}"
+
+- include: install_from_yum_repo.yml zabbix_packages="{{ jmx_gateway_packages }}" zabbix_stale_files="{{ jmx_stale_files }}"
+  when: "{{ zabbix_jmx_gateway and ansible_pkg_mgr == 'yum' and zabbix_installation_method == 'repo' }}"
+
+- include: create_mysql_database.yml
+- include: configuration.yml

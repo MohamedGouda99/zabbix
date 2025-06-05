@@ -1,0 +1,39 @@
+---
+# Register new Zabbix client with server
+
+- include: pre_requisites.yml
+  when: "{{ zabbix_api_connection_method == 'ssh' }}"
+
+- name: create Zabbix host groups
+  connection: "{{ zabbix_api_connection_method }}"
+  run_once: True
+  zabbix_group: host_groups="{{ zabbix_host_groups }}" state=present
+                server_url="http://{{ item }}/zabbix"
+                login_user="{{ zabbix_server_username }}"
+                login_password="{{ zabbix_server_password }}"
+  with_items: "{{ groups[ 'zabbix-server' ] }}"
+
+- name: purge Zabbix host from server configuration
+  connection: "{{ zabbix_api_connection_method }}"
+  zabbix_host:  host_name="{{ zabbix_host_name_override | default(ansible_fqdn) }}"
+                server_url="http://{{ item }}/zabbix"
+                login_user="{{ zabbix_server_username }}"
+                login_password="{{ zabbix_server_password }}"
+                state=absent
+  with_items: "{{ groups[ 'zabbix-server' ] }}"
+  when: "{{ zabbix_remove_stale_version | bool }}"
+
+- name: create Zabbix host
+  connection: "{{ zabbix_api_connection_method }}"
+  zabbix_host:  host_name="{{ zabbix_host_name_override | default(ansible_fqdn) }}"
+                host_groups="{{ zabbix_host_groups }}"
+                server_url="http://{{ item }}/zabbix"
+                login_user="{{ zabbix_server_username }}"
+                login_password="{{ zabbix_server_password }}"
+                state=present
+                status=enabled
+                inventory_mode=automatic
+                interfaces="{{ zabbix_host_interfaces }}"
+                link_templates="{{ zabbix_host_templates }}"
+                # (added in 2.3) visible_name="{{ ansible_nodename }}"
+  with_items: "{{ groups[ 'zabbix-server' ] }}"

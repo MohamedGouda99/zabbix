@@ -1,0 +1,44 @@
+---
+
+# -------------------------------------------------------------
+#  required packages for the Ansible mysql modules
+
+- name: install mysql package(s) required by ansible
+  become: yes
+  apt:  name="{{ mysql_ansible_package }}" state=present
+  when: "{{ ansible_pkg_mgr == 'apt' }}"
+
+# -------------------------------------------------------------
+#  MySQL operations
+
+- name: remove MySQL database
+  mysql_db: name="{{ mysql_zabbix_database }}"
+            state=absent
+            encoding="{{ mysql_charset }}"
+            collation="{{ mysql_collation }}"
+            login_user=root
+  when: "{{ zabbix_remove_stale_version | bool }}"
+
+- name: create MySQL database
+  mysql_db: name="{{ mysql_zabbix_database }}"
+            state=present
+            encoding="{{ mysql_charset }}"
+            collation="{{ mysql_collation }}"
+            login_user=root
+  register: mysql_db_created
+
+- name: create MySQL user
+  mysql_user: name="{{ mysql_zabbix_username }}"
+              password="{{ mysql_zabbix_password }}"
+              state=present
+              priv="zabbix.*:ALL"
+              update_password=on_create
+              login_user=root
+
+- name: create MySQL database schema
+  mysql_db: name="{{ mysql_zabbix_database }}"
+            state=import
+            target="{{ mysql_schema_script }}"
+            login_user="{{ mysql_zabbix_username }}"
+            login_password="{{ mysql_zabbix_password }}"
+  when: "{{ mysql_db_created.changed }}"

@@ -1,0 +1,20 @@
+---
+# Zabbix Official package repository
+
+# -------------------------------------------------------------
+#  2. install package with Zabbix repo configuration
+
+- name: add Zabbix Ubuntu repository signing key
+  become: yes
+  apt_key: data="{{ lookup('file', 'zabbix.pgp') }}" state=present
+  when: "{{ zabbix_repo_to_add }}"
+
+- name: install deb package with Zabbix repo configuration
+  become: yes
+  apt: deb="{{ zabbix_repo_package }}"
+  register: zabbix_repo_config_added
+
+- name: update package data
+  become: yes
+  apt: update_cache=yes
+  when: "{{ zabbix_repo_config_added.changed }}"

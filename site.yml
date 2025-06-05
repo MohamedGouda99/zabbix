@@ -1,0 +1,19 @@
+---
+# ----------------------------------------------------------------------
+#                           Zabbix Installation
+# ----------------------------------------------------------------------
+
+- hosts: zabbix-server
+  roles:
+    - { role: zabbix-repository,    tags: [ server, agent ] }
+    - { role: zabbix-server,        tags: server }
+    - { role: zabbix-client,        tags: agent  }
+
+- hosts: zabbix-client
+  roles:
+    - zabbix-repository
+    - zabbix-client
+
+# ----------------------------------------------------------------------
+# eof
+#
