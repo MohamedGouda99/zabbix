@@ -1,8 +1,17 @@
 # zabbix-ansible
-1. Install zabbix server and agent in Centos 7.x
+1. Install Zabbix server and agent on CentOS 7.x or Ubuntu 24.04
 2. Make sure close selinux
 3. Use postgres as the zabbix database 
 4. Agent default is active mode
+5. To test locally on Ubuntu 24.04 install Ansible then run the playbooks with the bundled `hosts` file
+
+### Quick start on Ubuntu 24.04
+```bash
+sudo apt update
+sudo apt install ansible -y
+ansible-playbook -i hosts init_zabbix_server.yml
+ansible-playbook -i hosts init_zabbix_agent.yml
+```
 
 ## Install Zabbix Server
 Update vars/zabbix_basic.yml
@@ -31,8 +40,8 @@ Update vars/zabbix_server.yml
 #time zone
 timezone: 'Asia/Shanghai' # use your own time zone
 
-#postgres     postgres infomation, make sure you have created it  
-db_host: '172.16.251.33'
+#postgres     postgres infomation, make sure you have created it
+db_host: '127.0.0.1'
 db_port: '5432'
 db_name: 'zabbix'
 db_user: 'zabbix'
@@ -55,14 +64,14 @@ zabbix_server_install:
 #Start services
 services:
    - 'zabbix-server'
-   - 'httpd'
+   - 'httpd' # use 'apache2' on Debian-based systems
 
 ```
 
 Update hosts
 ```
 [zabbix_server]
-172.16.251.75
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
 ```
 
 Update init_zabbix_server.yml
@@ -125,7 +134,7 @@ zabbix_agent_install:
   - "zabbix-agent"
 
 #zabbix master ip
-server_active_ip: 172.16.251.75 # your zabbix master ip
+server_active_ip: 127.0.0.1 # your zabbix master ip
 
 #refress time
 refresh_active_checks: 60
@@ -138,8 +147,7 @@ services:
 Update hosts
 ```
 [zabbix_agent]
-172.16.251.76
-172.16.251.77
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python3
 ```
 
 Update init_zabbix_agent.yml

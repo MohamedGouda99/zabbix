@@ -1,0 +1,23 @@
+name: Ansible Lint and Syntax Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: |
+          pip install ansible
+      - name: Syntax check server
+        run: ansible-playbook init_zabbix_server.yml --syntax-check
+      - name: Syntax check agent
+        run: ansible-playbook init_zabbix_agent.yml --syntax-check

@@ -8,16 +8,18 @@ user_parameter_list:
 zabbix_script_list:
    - "http_monitor.py"
 
-
 #installation of zabbix
 zabbix_agent_install:
   - "zabbix-agent"
 
 #zabbix master ip
-server_active_ip: 172.16.251.75
+server_active_ip: 127.0.0.1
 
 #refress time
 refresh_active_checks: 60
 
-services: 
+services:
   - 'zabbix-agent'
+
+# name of the agent service
+zabbix_agent_service: 'zabbix-agent'

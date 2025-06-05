@@ -1,9 +1,8 @@
 ---
 - name: Install Zabbix Agent
-  include_tasks: install_zabbix_agent.yml
+  include_tasks: install_zabbix_agent_debian.yml
   when: install
 
 - name: Config Zabbix agent
   include_tasks: config_zabbix_agent.yml
   when: config
-
