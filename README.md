@@ -12,21 +12,20 @@ Automate the installation of Zabbix server, agents and plugins:
 
 1. Install Ansible ([instructions](http://docs.ansible.com/intro_installation.html))
 1. Get the playbook from the GitHub repository
-1. Create [inventory](http://docs.ansible.com/intro_inventory.html) file from [this template](hosts.empty) and add the Zabbix hosts
+1. The repository now includes a basic local inventory in **hosts**.  If you need to target remote machines update this file accordingly.
+1. In CI runs the playbook sets `ci_testing=true` to skip repository downloads.
 
 ```
 > cat hosts
 
-...
+[all:vars]
+ansible_connection=local
+
 [zabbix-server]
-zabbix-server.example.com
+localhost
 
-[zabbix-client:children]
-
-[zabbiz-client-only]
-zabbix-client-1.example.com
-zabbix-client-2.example.com
-zabbix-client-3.example.com
+[zabbix-client]
+localhost
 ```
 
 ### Zabbix server deployment
@@ -81,7 +80,12 @@ Options can be set at runtime to change the playbook actions:
 
 * [LDAP authenticaiton setup](https://github.com/CumulusNetworks/ansible-role-activedirectory-auth-client) on the server
 * Add support to run the playbook on RedHat, Fedora amd Ubuntu 16
-* Deployment of Zabbix proxy server
+* ~~Deployment of Zabbix proxy server~~
 * Fix the bug that breaks the MySQL schema creation and submit PR to Ansible
 * Create host screen after registering an agent host with Zabbix server
 * ~~Deployment of JMX Gateway~~
+
+### Automated management with ansible-pull
+
+This repository includes a role that installs an `ansible-pull` systemd timer.
+The timer runs every hour and keeps hosts in sync with the Git repository.
