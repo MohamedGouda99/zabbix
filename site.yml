@@ -5,14 +5,28 @@
 
 - hosts: zabbix-server
   roles:
-    - { role: zabbix-repository,    tags: [ server, agent ] }
-    - { role: zabbix-server,        tags: server }
-    - { role: zabbix-client,        tags: agent  }
+    - { role: mariadb, when: not ci_testing | default(false) }
+    - { role: zabbix-repository, when: not ci_testing | default(false), tags: [ server, agent ] }
+    - { role: zabbix-server, when: not ci_testing | default(false), tags: server }
+    - { role: zabbix-client, when: not ci_testing | default(false), tags: agent }
+    - ansible-pull
+    - user-management
+
+- hosts: zabbix-proxy
+  roles:
+    - { role: mariadb, when: not ci_testing | default(false) }
+    - { role: zabbix-repository, when: not ci_testing | default(false) }
+    - { role: zabbix-proxy, when: not ci_testing | default(false) }
+    - { role: zabbix-client, when: not ci_testing | default(false) }
+    - ansible-pull
+    - user-management
 
 - hosts: zabbix-client
   roles:
-    - zabbix-repository
-    - zabbix-client
+    - { role: zabbix-repository, when: not ci_testing | default(false) }
+    - { role: zabbix-client, when: not ci_testing | default(false) }
+    - ansible-pull
+    - user-management
 
 # ----------------------------------------------------------------------
 # eof

@@ -1,0 +1,8 @@
+---
+# Zabbix proxy default variables
+zabbix_proxy_db_name: zabbix
+zabbix_proxy_db_user: zabbix
+zabbix_proxy_db_pass: CHANGE-ME:zabbix-password
+zabbix_proxy_db_host: localhost
+zabbix_proxy_server: zabbix.example.com
+zabbix_proxy_hostname: "{{ ansible_hostname }}"

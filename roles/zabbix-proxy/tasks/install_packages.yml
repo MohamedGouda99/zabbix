@@ -1,0 +1,14 @@
+---
+- name: install Zabbix proxy and agent packages
+  become: yes
+  apt:
+    name:
+      - zabbix-proxy-mysql
+      - zabbix-agent
+    state: present
+
+- name: install MariaDB 11.4 server
+  become: yes
+  apt:
+    name: mariadb-server
+    state: present

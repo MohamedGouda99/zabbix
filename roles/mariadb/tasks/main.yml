@@ -1,0 +1,28 @@
+---
+- name: add MariaDB signing key
+  become: yes
+  apt_key:
+    url: https://mariadb.org/mariadb_release_signing_key.asc
+    state: present
+  when: ansible_pkg_mgr == 'apt'
+
+- name: add MariaDB repository
+  become: yes
+  apt_repository:
+    repo: "deb [arch=amd64] https://mirror.mariadb.org/repo/{{ mariadb_version }}/ubuntu {{ ansible_distribution_release }} main"
+    filename: mariadb
+    state: present
+  when: ansible_pkg_mgr == 'apt'
+
+- name: update apt cache after adding MariaDB repo
+  become: yes
+  apt:
+    update_cache: yes
+  when: ansible_pkg_mgr == 'apt'
+
+- name: install MariaDB server
+  become: yes
+  apt:
+    name: mariadb-server
+    state: present
+  when: ansible_pkg_mgr == 'apt'

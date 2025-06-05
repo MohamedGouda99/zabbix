@@ -1,57 +1,85 @@
 Zabbix Deployment with [Ansible](http://docs.ansible.com/playbooks.html)
 ========================================================================
 
-Automate the installation of Zabbix server, agents and plugins:
+This repository contains a minimal set of roles that install and
+configure a complete Zabbix environment on Ubuntu 24.04 hosts.  It can
+deploy the following components:
 
 * Zabbix server
 * Zabbix proxy
 * Zabbix agent
 * JMX gateway
 
+Hosts are also configured with a systemd timer that periodically runs
+`ansible-pull` so configuration changes pushed to your Git repository are
+applied automatically.
+
 ### Preparation
 
 1. Install Ansible ([instructions](http://docs.ansible.com/intro_installation.html))
-1. Get the playbook from the GitHub repository
-1. Create [inventory](http://docs.ansible.com/intro_inventory.html) file from [this template](hosts.empty) and add the Zabbix hosts
+2. Clone this repository
+   ```bash
+   git clone https://github.com/example/zabbix-ansible.git
+   cd zabbix-ansible
+   ```
+3. Edit **group_vars/all.yml** to match your environment.  Important variables include
+   - `ansible_pull_repo` – Git URL used by `ansible-pull`
+   - `ansible_pull_branch` – branch name to track
+   - `zabbix_proxy_server` – hostname or IP of the Zabbix server
+   - `users_present` / `users_absent` / `users_disabled` – user management lists
+   - `mariadb_version` – MariaDB version to install (default 11.4)
+4. Adjust the **hosts** file with the inventory of servers, proxies and clients.
+5. The CI workflow runs the playbook with `ci_testing=true` so package installations are skipped during automated tests.
 
 ```
 > cat hosts
 
-...
+[all:vars]
+ansible_connection=local
+
 [zabbix-server]
-zabbix-server.example.com
+localhost
 
-[zabbix-client:children]
+[zabbix-client]
+localhost
 
-[zabbiz-client-only]
-zabbix-client-1.example.com
-zabbix-client-2.example.com
-zabbix-client-3.example.com
+[zabbix-proxy]
+localhost
 ```
+
+Edit this file to point to your actual hosts before running the playbook.
 
 ### Zabbix server deployment
 
-The procedure consists of 3 steps of which the 2nd one is manual and executes by you:
+Installing the server requires a short manual step to finish the web
+installer. Run the playbook twice as shown below:
 
-1. Install server software packages
-1. Connect to server with browser and complete the configuration
-1. Install agent on the server host
+The `mariadb` role will configure the MariaDB 11.4 repository and ensure
+the database server is installed before Zabbix packages are deployed.
 
-The deployment is split into 2 phases because you have to connect to the server with browser and input some config parameters, as per server installation instruction. If there is a way to get around it please share it.
+1. Install the packages and create the database
+2. Open the Zabbix web interface and complete the configuration wizard
+3. Run the playbook again to configure the local agent
 
 ```bash
 $ ansible-playbook -v -i hosts site.yml --limit zabbix-server -t server
 ...
-
-# now switch to your browser and connect to the server
-# and complete the configuration, then come back here
-
+# Complete the web installer in your browser and then run
 $ ansible-playbook -v -i hosts site.yml --limit zabbix-server -t agent
 ```
 
 Options can be set at runtime to change the playbook actions:
 
 * _zabbix_remove_stale_version_ -- uninstall packages, drop database, remove files (default=false)
+
+### Zabbix proxy deployment
+
+Deploy a proxy along with MariaDB 11.4 and the Zabbix agent. The `mariadb`
+role configures the official repository and installs the database server:
+
+```bash
+$ ansible-playbook -v -i hosts site.yml --limit zabbix-proxy
+```
 
 ### Zabbix agent deployment
 
@@ -68,6 +96,23 @@ Options can be set at runtime to change the playbook actions:
 * _zabbix_register_with_server_ -- register hosts with Zabbix server (default=yes)
 * _zabbix_api_connection_method_ -- make Zabbix server REST api calls from your laptop (default=local)
 
+### User management
+
+The `user-management` role uses three variables to control accounts:
+
+```yaml
+users_present:
+  - name: alice
+    ssh_key: "ssh-ed25519 AAA..."
+users_disabled:
+  - bob
+users_absent:
+  - olduser
+```
+
+Run the playbook after editing these lists to ensure accounts are created,
+disabled or removed accordingly.
+
 ### Note
 
 * If [passwordless login](http://linuxconfig.org/passwordless-ssh) is not enabled on the target hosts, use the "-k" option
@@ -81,7 +126,24 @@ Options can be set at runtime to change the playbook actions:
 
 * [LDAP authenticaiton setup](https://github.com/CumulusNetworks/ansible-role-activedirectory-auth-client) on the server
 * Add support to run the playbook on RedHat, Fedora amd Ubuntu 16
-* Deployment of Zabbix proxy server
+* ~~Deployment of Zabbix proxy server~~
 * Fix the bug that breaks the MySQL schema creation and submit PR to Ansible
 * Create host screen after registering an agent host with Zabbix server
 * ~~Deployment of JMX Gateway~~
+
+### Automated management with ansible-pull
+
+This repository includes a role that installs an `ansible-pull` systemd timer.
+After the first run of `site.yml` each host will periodically execute
+`ansible-pull` and apply any changes committed to your repository.  The
+timer interval is controlled by the `ansible_pull_frequency` variable in
+`group_vars/all.yml` (default `1h`).
+
+Make sure `ansible_pull_repo` points at your Git repository before you
+bootstrap a host.
+
+### Continuous integration
+
+The repository ships with a simple GitHub Actions workflow.  Every pull
+request runs `ansible-playbook` with `ci_testing=true` to verify the
+playbook syntax without attempting to download packages.

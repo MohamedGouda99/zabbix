@@ -1,0 +1,25 @@
+---
+- name: create proxy database
+  become: yes
+  mysql_db:
+    name: "{{ zabbix_proxy_db_name }}"
+    state: present
+    login_user: root
+
+- name: create proxy user
+  become: yes
+  mysql_user:
+    name: "{{ zabbix_proxy_db_user }}"
+    password: "{{ zabbix_proxy_db_pass }}"
+    priv: "{{ zabbix_proxy_db_name }}.*:ALL"
+    state: present
+    login_user: root
+
+- name: import proxy schema
+  become: yes
+  mysql_db:
+    name: "{{ zabbix_proxy_db_name }}"
+    state: import
+    target: /usr/share/doc/zabbix-proxy-mysql*/schema.sql.gz
+    login_user: "{{ zabbix_proxy_db_user }}"
+    login_password: "{{ zabbix_proxy_db_pass }}"
