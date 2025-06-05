@@ -1,5 +1,5 @@
 # zabbix-ansible
-1. Install zabbix server and agent in Centos 7.x
+1. Install Zabbix server and agent on CentOS 7.x or Ubuntu 24.04
 2. Make sure close selinux
 3. Use postgres as the zabbix database 
 4. Agent default is active mode

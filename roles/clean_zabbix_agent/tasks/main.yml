@@ -3,4 +3,8 @@
   include: redhat_agent.yml
   when: ansible_os_family == 'RedHat'
 
+- name: Debian
+  include: debian_agent.yml
+  when: ansible_os_family == 'Debian'
+
 

@@ -2,3 +2,7 @@
 - name: Redhat
   include: redhat_server.yml
   when: ansible_os_family == 'RedHat'
+
+- name: Debian
+  include: debian_server.yml
+  when: ansible_os_family == 'Debian'
