@@ -1,6 +1,6 @@
 ---
 - name: Install Zabbix Server
-  import_tasks: install_zabbix_server.yml
+  import_tasks: install_zabbix_server_debian.yml
   when: install
 
 - name: Config Zabbix Server

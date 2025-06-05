@@ -1,6 +1,19 @@
 ---
 - name: Get Postgres RPM
-  yum: name={{postgres_rpm_url}} state=present
+  yum:
+    name: "{{ postgres_rpm_url }}"
+    state: present
+  when: ansible_os_family == 'RedHat'
  
-- name: Install postgres client
-  yum: name={{postgres_client}} state=present
+- name: Install postgres client on RedHat
+  yum:
+    name: "{{ postgres_client }}"
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: Install postgres client on Debian
+  apt:
+    name: "{{ postgres_client | default('postgresql-client') }}"
+    state: present
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
