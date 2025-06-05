@@ -1,0 +1,19 @@
+name: Ansible Tests
+
+on: [push, pull_request]
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible
+      - name: Run Zabbix Agent playbook in check mode
+        run: |
+          ansible-playbook -i ci_hosts init_zabbix_agent.yml --check
+      - name: Run Zabbix Server playbook in check mode
+        run: |
+          ansible-playbook -i ci_hosts init_zabbix_server.yml --check

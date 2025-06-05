@@ -1,0 +1,14 @@
+---
+- name: Stop Zabbix Agent
+  systemd:
+    name: "{{ zabbix_agent_service }}"
+    state: stopped
+  ignore_errors: true
+
+- name: Remove Zabbix
+  apt:
+    name: zabbix-agent
+    state: absent
+    purge: yes
+    update_cache: yes
+  ignore_errors: true
