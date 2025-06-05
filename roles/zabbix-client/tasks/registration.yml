@@ -1,7 +1,7 @@
 ---
 # Register new Zabbix client with server
 
-- include: pre_requisites.yml
+- include_tasks: pre_requisites.yml
   when: "{{ zabbix_api_connection_method == 'ssh' }}"
 
 - name: create Zabbix host groups

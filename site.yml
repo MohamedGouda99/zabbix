@@ -5,14 +5,14 @@
 
 - hosts: zabbix-server
   roles:
-    - { role: zabbix-repository,    tags: [ server, agent ] }
-    - { role: zabbix-server,        tags: server }
-    - { role: zabbix-client,        tags: agent  }
+    - { role: zabbix-repository, when: not ci_testing | default(false), tags: [ server, agent ] }
+    - { role: zabbix-server, when: not ci_testing | default(false), tags: server }
+    - { role: zabbix-client, when: not ci_testing | default(false), tags: agent }
 
 - hosts: zabbix-client
   roles:
-    - zabbix-repository
-    - zabbix-client
+    - { role: zabbix-repository, when: not ci_testing | default(false) }
+    - { role: zabbix-client, when: not ci_testing | default(false) }
 
 # ----------------------------------------------------------------------
 # eof
