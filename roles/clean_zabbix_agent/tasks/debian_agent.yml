@@ -6,7 +6,9 @@
   ignore_errors: true
 
 - name: Remove Zabbix
-  yum:
-    name: zabbix*
+  apt:
+    name: zabbix-agent
     state: absent
-
+    purge: yes
+    update_cache: yes
+  ignore_errors: true

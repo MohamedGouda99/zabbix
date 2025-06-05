@@ -1,0 +1,11 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Zabbix Agent
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ zabbix_agent_install }}"

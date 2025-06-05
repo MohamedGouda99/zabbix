@@ -3,7 +3,7 @@
 timezone: 'Asia/Shanghai'
 
 #postgres
-db_host: '172.16.251.33'
+db_host: '127.0.0.1'
 db_port: '5432'
 db_name: 'zabbix'
 db_user: 'zabbix'
@@ -26,4 +26,4 @@ zabbix_server_install:
 #Start services
 services:
    - 'zabbix-server'
-   - 'httpd'
+   - "{{ 'apache2' if ansible_os_family == 'Debian' else 'httpd' }}"

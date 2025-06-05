@@ -1,10 +1,22 @@
 ---
 
 - name: Template Zabbix conf
-  template: src=zabbix_server.conf dest={{zabbix_conf_path}} mode="u=rw,g=r,o=r"
+  template:
+    src: zabbix_server.conf
+    dest: "{{ zabbix_conf_path }}"
+    mode: "u=rw,g=r,o=r"
 
 - name: Template Zabbix Web Conf
-  template: src=zabbix_httpd.conf dest=/etc/httpd/conf.d/zabbix.conf
+  template:
+    src: zabbix_httpd.conf
+    dest: /etc/httpd/conf.d/zabbix.conf
+  when: ansible_os_family == 'RedHat'
+
+- name: Template Zabbix Web Conf on Debian
+  template:
+    src: zabbix_httpd.conf
+    dest: /etc/apache2/conf-enabled/zabbix.conf
+  when: ansible_os_family == 'Debian'
   
 
 

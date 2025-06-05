@@ -1,4 +1,8 @@
 ---
 - name: Redhat
-  include: redhat_server.yml
+  include_tasks: redhat_server.yml
   when: ansible_os_family == 'RedHat'
+
+- name: Debian
+  include_tasks: debian_server.yml
+  when: ansible_os_family == 'Debian'
