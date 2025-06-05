@@ -25,4 +25,4 @@
 # -------------------------------------------------------------
 #  install packages with python-pip
 
-- include: install_packages_pip.yml
+- include_tasks: install_packages_pip.yml
