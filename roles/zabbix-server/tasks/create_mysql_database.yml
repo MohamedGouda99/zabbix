@@ -39,9 +39,9 @@
     password: "{{ mysql_zabbix_password }}"
     state: present
     priv: "zabbix.*:ALL"
-  update_password: on_create
-  login_user: root
-  login_unix_socket: "{{ mysql_unix_socket }}"
+    update_password: on_create
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
   become: yes
 
 - name: create MySQL database schema
@@ -49,7 +49,7 @@
     name: "{{ mysql_zabbix_database }}"
     state: import
     target: "{{ mysql_schema_script }}"
-  login_user: "{{ mysql_zabbix_username }}"
-  login_password: "{{ mysql_zabbix_password }}"
+    login_user: "{{ mysql_zabbix_username }}"
+    login_password: "{{ mysql_zabbix_password }}"
   when: mysql_db_created.changed
   become: yes
