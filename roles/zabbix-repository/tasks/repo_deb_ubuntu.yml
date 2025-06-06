@@ -8,8 +8,15 @@
   become: yes
   get_url:
     url: https://repo.zabbix.com/zabbix-official-repo.key
-    dest: /usr/share/keyrings/zabbix.gpg
+    dest: /tmp/zabbix.asc
     mode: '0644'
+  when: zabbix_repo_to_add
+
+- name: dearmor Zabbix key
+  become: yes
+  command: gpg --dearmor -o /usr/share/keyrings/zabbix.gpg /tmp/zabbix.asc
+  args:
+    creates: /usr/share/keyrings/zabbix.gpg
   when: zabbix_repo_to_add
 
 - name: configure Zabbix APT repository

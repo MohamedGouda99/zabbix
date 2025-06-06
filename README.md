@@ -6,10 +6,10 @@ configure a complete Zabbix environment on Ubuntu 24.04 hosts.  Zabbix 6.0
 LTS packages are provided through the Jammy repository. Noble hosts use this
 release while official packages are in development.  The `zabbix-repository`
 role configures the official apt repository directly rather than installing the
-`zabbix-release` package.  The signing key is fetched to
-`/usr/share/keyrings/zabbix.gpg` and referenced with the `signed-by=` option to
-avoid `apt-key` deprecation warnings.  The `mariadb` role downloads the MariaDB
-signing key, converts it with `gpg --dearmor` into
+`zabbix-release` package.  The signing key is downloaded, converted with
+`gpg --dearmor` into `/usr/share/keyrings/zabbix.gpg` and referenced with the
+`signed-by=` option to avoid `apt-key` deprecation warnings.  The `mariadb` role
+downloads the MariaDB signing key, converts it in the same way into
 `/usr/share/keyrings/mariadb.gpg`, and configures the repository with the same
 `signed-by=` syntax. MariaDB packages also come from the Jammy
 archive.
