@@ -44,6 +44,12 @@
     login_unix_socket: "{{ mysql_unix_socket }}"
   become: yes
 
+- name: extract Zabbix schema
+  become: yes
+  shell: "gzip -dc {{ mysql_schema_source }} > {{ mysql_schema_script }}"
+  args:
+    creates: "{{ mysql_schema_script }}"
+
 - name: create MySQL database schema
   mysql_db:
     name: "{{ mysql_zabbix_database }}"

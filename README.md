@@ -128,7 +128,7 @@ an error.
 
 ### Issues
 
-* Creating MySQL schema will fail due to [bug](http://stackoverflow.com/questions/36770317/why-is-my-mysql-import-failing-w-ansible) in the __mysql_db__ Ansible module. The workaround is to extract the sql file from the compressed gz file, place it in the home directory and change this [roles/zabbix-server/vars/main.yml](var file) and point it to the extracted file.
+* The Ansible `mysql_db` module cannot import the gzipped schema shipped with the package. The playbook now extracts `create.sql` automatically so the database schema loads without manual steps.
 
 ### TODOs
 
