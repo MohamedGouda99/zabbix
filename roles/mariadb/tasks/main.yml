@@ -9,7 +9,7 @@
 - name: add MariaDB repository
   become: yes
   apt_repository:
-    repo: "deb [arch=amd64] https://mirror.mariadb.org/repo/{{ mariadb_version }}/ubuntu {{ ansible_distribution_release }} main"
+    repo: "deb [arch=amd64] https://mirror.mariadb.org/repo/{{ mariadb_version }}/ubuntu {{ mariadb_repo_release }} main"
     filename: mariadb
     state: present
   when: ansible_pkg_mgr == 'apt'

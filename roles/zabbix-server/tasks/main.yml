@@ -2,10 +2,10 @@
 # Install Zabbix server
 
 - include_tasks: install_deb_from_repo.yml
-  when: "{{ ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo' }}"
+  when: ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo'
 
 - include_tasks: install_from_yum_repo.yml
-  when: "{{ ansible_pkg_mgr == 'yum' and zabbix_installation_method == 'repo' }}"
+  when: ansible_pkg_mgr == 'yum' and zabbix_installation_method == 'repo'
 
 # -------------------------------------------------------------
 #  Zabbix JMX Gateway
@@ -15,14 +15,14 @@
   vars:
     zabbix_packages: "{{ jmx_gateway_packages }}"
     zabbix_stale_files: "{{ jmx_stale_files }}"
-  when: "{{ zabbix_jmx_gateway and ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo' }}"
+  when: zabbix_jmx_gateway and ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo'
 
 - include_tasks:
     file: install_from_yum_repo.yml
   vars:
     zabbix_packages: "{{ jmx_gateway_packages }}"
     zabbix_stale_files: "{{ jmx_stale_files }}"
-  when: "{{ zabbix_jmx_gateway and ansible_pkg_mgr == 'yum' and zabbix_installation_method == 'repo' }}"
+  when: zabbix_jmx_gateway and ansible_pkg_mgr == 'yum' and zabbix_installation_method == 'repo'
 
 - include_tasks: create_mysql_database.yml
 - include_tasks: configuration.yml

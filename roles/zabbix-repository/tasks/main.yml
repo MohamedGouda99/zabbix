@@ -4,22 +4,14 @@
 # -------------------------------------------------------------
 #  prepare
 
-- name: create folder for downloaded files
-  connection: local
-  run_once: true
-  file: name="{{ current_dir }}/{{ download_cache }}" state=directory
-
 - include_tasks: install_ansible_required.yml
   when: "{{ ansible_required_package != 'none' }}"
 
 # -------------------------------------------------------------
 #  install
 
-- include_tasks: repo_package.yml
-  when: "{{ zabbix_installation_method == 'repo' }}"
-
 - include_tasks: repo_deb_ubuntu.yml
-  when: "{{ ansible_pkg_mgr == 'apt' and zabbix_installation_method == 'repo' }}"
+  when: "{{ ansible_pkg_mgr == 'apt' }}"
 
 - include_tasks: repo_yum.yml
   when: "{{ ansible_pkg_mgr == 'yum' }}"

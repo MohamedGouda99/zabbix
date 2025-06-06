@@ -27,6 +27,19 @@ zabbix_proxy_db_pass: CHANGE-ME:zabbix-password
 # MariaDB version to install
 mariadb_version: '11.4'
 
+# Map distribution releases to repository releases if packages are missing
+repo_release_map:
+  noble: jammy
+
+zabbix_repo_release: "{{ repo_release_map[ansible_distribution_release] | default(ansible_distribution_release) }}"
+mariadb_repo_release: "{{ repo_release_map[ansible_distribution_release] | default(ansible_distribution_release) }}"
+
+# Services to verify after installation
+verify_services:
+  - { name: zabbix-server, log: /var/log/zabbix/zabbix_server.log }
+  - { name: zabbix-agent,  log: /var/log/zabbix/zabbix_agentd.log }
+  - { name: zabbix-proxy,  log: /var/log/zabbix/zabbix_proxy.log }
+
 # -------------------------------------------------------------
 
 zabbix_server_username:     "Admin"

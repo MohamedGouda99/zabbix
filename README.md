@@ -2,7 +2,12 @@ Zabbix Deployment with [Ansible](http://docs.ansible.com/playbooks.html)
 ========================================================================
 
 This repository contains a minimal set of roles that install and
-configure a complete Zabbix environment on Ubuntu 24.04 hosts.  It can
+configure a complete Zabbix environment on Ubuntu 24.04 hosts.  Zabbix 6.0
+LTS packages are provided through the Jammy repository. Noble hosts use this
+release while official packages are in development.  The `zabbix-repository`
+role configures the official apt repository directly rather than installing the
+`zabbix-release` package.  MariaDB packages also come from the Jammy archive.
+It can
 deploy the following components:
 
 * Zabbix server
@@ -113,6 +118,10 @@ users_absent:
 Run the playbook after editing these lists to ensure accounts are created,
 disabled or removed accordingly.
 
+After all roles run the `verify-services` role checks that the Zabbix services
+are active, enabled and writing logs. Any failures will stop the playbook with
+an error.
+
 ### Note
 
 * If [passwordless login](http://linuxconfig.org/passwordless-ssh) is not enabled on the target hosts, use the "-k" option
@@ -120,7 +129,7 @@ disabled or removed accordingly.
 
 ### Issues
 
-* Creating MySQL schema will fail due to [bug](http://stackoverflow.com/questions/36770317/why-is-my-mysql-import-failing-w-ansible) in the __mysql_db__ Ansible module. The workaround is to extract the sql file from the compressed gz file, place it in the home directory and change this [roles/zabbix-server/vars/main.yml](var file) and point it to the extracted file.
+* The Ansible `mysql_db` module cannot import the gzipped schema shipped with the package. The playbook now extracts `create.sql` automatically so the database schema loads without manual steps.
 
 ### TODOs
 

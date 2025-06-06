@@ -1,21 +1,17 @@
 ---
 
 zabbix_installation_method:             repo
-# zabbix_installation_method:             download
 zabbix_repo_to_add:                     True
 
-zabbix_version_major:       "7.2"
-zabbix_version_minor:       "1"
+zabbix_version_major:       "6.0"
 
-zabbix_version:             "{{ zabbix_version_major }}-{{ zabbix_version_minor }}"
+zabbix_repo_release: "{{ ansible_distribution_release }}"
 
-zabbix_repo_package_url_by_os:
-  Ubuntu:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/ubuntu/pool/main/z/zabbix-release/zabbix-release_{{ zabbix_version }}+{{ ansible_distribution_release }}_all.deb"
-  Debian:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/debian/pool/main/z/zabbix-release/zabbix-release_{{ zabbix_version }}+{{ ansible_distribution_release }}_all.deb"
-  RedHat:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/rhel/{{ ansible_distribution_major_version }}/x86_64/zabbix-release-{{ zabbix_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
-  CentOS:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/rhel/{{ ansible_distribution_major_version }}/x86_64/zabbix-release-{{ zabbix_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
+zabbix_repo_by_os:
+  Ubuntu: "deb https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/ubuntu/ {{ zabbix_repo_release }} main"
+  Debian: "deb https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/debian/ {{ zabbix_repo_release }} main"
 
-zabbix_repo_package_url:  "{{ zabbix_repo_package_url_by_os[ ansible_distribution ] | default('none') }}"
+zabbix_repo: "{{ zabbix_repo_by_os[ansible_distribution] | default('') }}"
 
 ansible_required_package_by_os:
   Ubuntu:       []

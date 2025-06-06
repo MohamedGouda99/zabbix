@@ -5,7 +5,7 @@ zabbix_packages:
   - zabbix-server-mysql
   - zabbix-frontend-php
   - snmp
-  - php5-ldap
+  - php-ldap
 
 jmx_gateway_packages:
   - zabbix-java-gateway
@@ -18,8 +18,8 @@ jmx_gateway_service_name:             "zabbix-java-gateway"
 #  mysql database statements
 
 mysql_ansible_package_by_os:
-  Ubuntu:       python-mysqldb
-  Debian:       python-mysqldb
+  Ubuntu:       python3-mysqldb
+  Debian:       python3-mysqldb
   RHEL:         MySQL-python
   CentOS:       MySQL-python
 
@@ -30,11 +30,17 @@ mysql_zabbix_username:          "zabbix"
 mysql_zabbix_password:          "CHANGE-ME:zabbix-mysql-password"
 mysql_zabbix_database:          "zabbix"
 
+# Unix socket used by root account for local authentication
+mysql_unix_socket:             "/var/run/mysqld/mysqld.sock"
+
 mysql_charset:                  utf8
 mysql_collation:                utf8_bin
 
-# mysql_schema_script:            "/usr/share/doc/zabbix-server-mysql/create.sql.gz"
-mysql_schema_script:            "create.sql"
+# path to the compressed schema shipped with the package
+mysql_schema_source:            "/usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz"
+
+# location of the extracted schema used during import
+mysql_schema_script:            "{{ remote_home_dir }}/create.sql"
 
 # TODO: Ansible bug
 #  ref: http://stackoverflow.com/questions/36770317/why-is-my-mysql-import-failing-w-ansible

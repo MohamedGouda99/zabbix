@@ -12,33 +12,68 @@
 #  MySQL operations
 
 - name: remove MySQL database
-  mysql_db: name="{{ mysql_zabbix_database }}"
-            state=absent
-            encoding="{{ mysql_charset }}"
-            collation="{{ mysql_collation }}"
-            login_user=root
+  mysql_db:
+    name: "{{ mysql_zabbix_database }}"
+    state: absent
+    encoding: "{{ mysql_charset }}"
+    collation: "{{ mysql_collation }}"
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
   when: "{{ zabbix_remove_stale_version | bool }}"
+  become: yes
 
 - name: create MySQL database
-  mysql_db: name="{{ mysql_zabbix_database }}"
-            state=present
-            encoding="{{ mysql_charset }}"
-            collation="{{ mysql_collation }}"
-            login_user=root
+  mysql_db:
+    name: "{{ mysql_zabbix_database }}"
+    state: present
+    encoding: "{{ mysql_charset }}"
+    collation: "{{ mysql_collation }}"
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
   register: mysql_db_created
+  become: yes
 
 - name: create MySQL user
-  mysql_user: name="{{ mysql_zabbix_username }}"
-              password="{{ mysql_zabbix_password }}"
-              state=present
-              priv="zabbix.*:ALL"
-              update_password=on_create
-              login_user=root
+  mysql_user:
+    name: "{{ mysql_zabbix_username }}"
+    password: "{{ mysql_zabbix_password }}"
+    state: present
+    priv: "zabbix.*:ALL"
+    update_password: on_create
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
+  become: yes
+
+- name: detect Zabbix schema location
+  become: yes
+  shell: |
+    for p in /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz \
+             /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz \
+             /usr/share/doc/zabbix-server-mysql/create.sql.gz; do
+      [ -e "$p" ] && { echo "$p"; break; }
+    done
+  args:
+    executable: /bin/bash
+  register: schema_path
+  changed_when: false
+
+- name: fail if Zabbix schema is missing
+  fail:
+    msg: "Zabbix schema file not found"
+  when: schema_path.stdout == ""
+
+- name: extract Zabbix schema
+  become: yes
+  shell: "gzip -dc {{ schema_path.stdout }} > {{ mysql_schema_script }}"
+  args:
+    creates: "{{ mysql_schema_script }}"
 
 - name: create MySQL database schema
-  mysql_db: name="{{ mysql_zabbix_database }}"
-            state=import
-            target="{{ mysql_schema_script }}"
-            login_user="{{ mysql_zabbix_username }}"
-            login_password="{{ mysql_zabbix_password }}"
-  when: "{{ mysql_db_created.changed }}"
+  mysql_db:
+    name: "{{ mysql_zabbix_database }}"
+    state: import
+    target: "{{ mysql_schema_script }}"
+    login_user: "{{ mysql_zabbix_username }}"
+    login_password: "{{ mysql_zabbix_password }}"
+  when: mysql_db_created.changed
+  become: yes
