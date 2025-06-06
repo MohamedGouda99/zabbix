@@ -15,11 +15,19 @@
     state: present
     login_user: root
 
+- name: extract proxy schema
+  become: yes
+  command: >-
+    gunzip -c /usr/share/doc/zabbix-proxy-mysql*/schema.sql.gz >
+    /tmp/zabbix_proxy_schema.sql
+  args:
+    creates: /tmp/zabbix_proxy_schema.sql
+
 - name: import proxy schema
   become: yes
   mysql_db:
     name: "{{ zabbix_proxy_db_name }}"
     state: import
-    target: /usr/share/doc/zabbix-proxy-mysql*/schema.sql.gz
+    target: /tmp/zabbix_proxy_schema.sql
     login_user: "{{ zabbix_proxy_db_user }}"
     login_password: "{{ zabbix_proxy_db_pass }}"
