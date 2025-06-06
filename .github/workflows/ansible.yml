@@ -9,9 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Ansible
+      - name: Start test container
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ansible
-      - name: Syntax check playbook
-        run: ansible-playbook -i hosts site.yml --syntax-check
+          docker run -d --name zbx-test --privileged \
+            -v ${{ github.workspace }}:/ansible -w /ansible ubuntu:24.04 \
+            /lib/systemd/systemd
+          docker exec zbx-test apt-get update
+          docker exec zbx-test apt-get install -y ansible sudo
+      - name: Run playbook inside container
+        run: docker exec zbx-test ansible-playbook -i hosts site.yml
+      - name: Cleanup
+        if: always()
+        run: docker rm -f zbx-test

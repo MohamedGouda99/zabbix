@@ -39,7 +39,7 @@ applied automatically.
    - `users_present` / `users_absent` / `users_disabled` – user management lists
    - `mariadb_version` – MariaDB version to install (default 11.4)
 4. Adjust the **hosts** file with the inventory of servers, proxies and clients.
-5. The CI workflow performs a syntax check only using `ansible-playbook -i hosts site.yml --syntax-check`.
+5. The CI workflow runs the playbook in a Docker container with systemd so every role is executed during automated tests.
 
 ```
 > cat hosts
@@ -159,5 +159,5 @@ bootstrap a host.
 ### Continuous integration
 
 The repository ships with a simple GitHub Actions workflow.  Every pull
-request runs `ansible-playbook -i hosts site.yml --syntax-check` to verify
-the playbook without performing package installations or starting services.
+request runs the full playbook inside a privileged Docker container to
+ensure Zabbix packages install and services start correctly.
