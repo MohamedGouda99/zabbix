@@ -9,8 +9,9 @@ role configures the official apt repository directly rather than installing the
 `zabbix-release` package.  The signing key is fetched to
 `/usr/share/keyrings/zabbix.gpg` and referenced with the `signed-by=` option to
 avoid `apt-key` deprecation warnings.  The `mariadb` role downloads the MariaDB
-signing key to `/usr/share/keyrings/mariadb.gpg` and configures the repository
-with the same `signed-by=` syntax. MariaDB packages also come from the Jammy
+signing key, converts it with `gpg --dearmor` into
+`/usr/share/keyrings/mariadb.gpg`, and configures the repository with the same
+`signed-by=` syntax. MariaDB packages also come from the Jammy
 archive.
 It can
 deploy the following components:
