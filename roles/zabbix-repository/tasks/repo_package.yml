@@ -4,26 +4,24 @@
 # -------------------------------------------------------------
 #  1. download repo config package
 
-- name: skip download when no repository package is defined
-  debug:
-    msg: "Zabbix repository package URL not defined; skipping download"
+- name: stop here if repo package is not defined
+  fail:
+    msg: "package with Zabbix repos is not defined"
   when: zabbix_repo_package_url == 'none'
 
-- block:
-    - name: download package with Zabbix repo configuration
-      connection: local
-      run_once: true
-      get_url:
-        url: "{{ zabbix_repo_package_url }}"
-        dest: "{{ current_dir }}/{{ download_cache }}"
+- name: download package with Zabbix repo configuration
+  connection: local
+  run_once: true
+  get_url:
+    url: "{{ zabbix_repo_package_url }}"
+    dest: "{{ current_dir }}/{{ download_cache }}"
 
-    - set_fact:
-        zabbix_repo_package: "{{ zabbix_repo_package_url | basename }}"
+- set_fact:
+    zabbix_repo_package: "{{ zabbix_repo_package_url | basename }}"
 
-    - name: transfer package with Zabbix repo configuration
-      copy:
-        src: "{{ current_dir }}/{{ download_cache }}/{{ zabbix_repo_package }}"
-        dest: "{{ remote_home_dir }}/{{ zabbix_repo_package }}"
-      notify:
-        - clean up package with Zabbix repo configuration
-  when: zabbix_repo_package_url != 'none'
+- name: transfer package with Zabbix repo configuration
+  copy:
+    src: "{{ current_dir }}/{{ download_cache }}/{{ zabbix_repo_package }}"
+    dest: "{{ remote_home_dir }}/{{ zabbix_repo_package }}"
+  notify:
+    - clean up package with Zabbix repo configuration

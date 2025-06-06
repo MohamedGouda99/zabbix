@@ -31,7 +31,7 @@ mariadb_version: '11.4'
 repo_release_map:
   noble: jammy
 
-zabbix_repo_release: "{{ repo_release_map[ansible_distribution_release] | default(ansible_distribution_release) }}"
+zabbix_repo_release: "{{ ansible_distribution_release }}"
 mariadb_repo_release: "{{ repo_release_map[ansible_distribution_release] | default(ansible_distribution_release) }}"
 
 # Services to verify after installation
