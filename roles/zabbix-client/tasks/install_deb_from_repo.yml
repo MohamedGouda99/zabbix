@@ -32,18 +32,10 @@
 
 - name: install Zabbix agent packages
   become: yes
-  apt:  name="{{ item }}={{ zabbix_package_version }}*" state=present
-  with_items: "{{ zabbix_packages }}"
-  when: zabbix_package_version != 'latest'
-  notify:
-    - enable zabbix agent
-    - start zabbix agent
-
-- name: install Zabbix agent packages (latest version)
-  become: yes
-  apt:  name="{{ item }}" state=latest
-  with_items: "{{ zabbix_packages }}"
-  when: zabbix_package_version == 'latest'
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ zabbix_packages }}"
   notify:
     - enable zabbix agent
     - start zabbix agent
