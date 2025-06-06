@@ -30,6 +30,9 @@ mysql_zabbix_username:          "zabbix"
 mysql_zabbix_password:          "CHANGE-ME:zabbix-mysql-password"
 mysql_zabbix_database:          "zabbix"
 
+# Unix socket used by root account for local authentication
+mysql_unix_socket:             "/var/run/mysqld/mysqld.sock"
+
 mysql_charset:                  utf8
 mysql_collation:                utf8_bin
 

@@ -12,33 +12,40 @@
 #  MySQL operations
 
 - name: remove MySQL database
-  mysql_db: name="{{ mysql_zabbix_database }}"
-            state=absent
-            encoding="{{ mysql_charset }}"
-            collation="{{ mysql_collation }}"
-            login_user=root
+  mysql_db:
+    name: "{{ mysql_zabbix_database }}"
+    state: absent
+    encoding: "{{ mysql_charset }}"
+    collation: "{{ mysql_collation }}"
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
   when: "{{ zabbix_remove_stale_version | bool }}"
 
 - name: create MySQL database
-  mysql_db: name="{{ mysql_zabbix_database }}"
-            state=present
-            encoding="{{ mysql_charset }}"
-            collation="{{ mysql_collation }}"
-            login_user=root
+  mysql_db:
+    name: "{{ mysql_zabbix_database }}"
+    state: present
+    encoding: "{{ mysql_charset }}"
+    collation: "{{ mysql_collation }}"
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
   register: mysql_db_created
 
 - name: create MySQL user
-  mysql_user: name="{{ mysql_zabbix_username }}"
-              password="{{ mysql_zabbix_password }}"
-              state=present
-              priv="zabbix.*:ALL"
-              update_password=on_create
-              login_user=root
+  mysql_user:
+    name: "{{ mysql_zabbix_username }}"
+    password: "{{ mysql_zabbix_password }}"
+    state: present
+    priv: "zabbix.*:ALL"
+    update_password: on_create
+    login_user: root
+    login_unix_socket: "{{ mysql_unix_socket }}"
 
 - name: create MySQL database schema
-  mysql_db: name="{{ mysql_zabbix_database }}"
-            state=import
-            target="{{ mysql_schema_script }}"
-            login_user="{{ mysql_zabbix_username }}"
-            login_password="{{ mysql_zabbix_password }}"
-  when: "{{ mysql_db_created.changed }}"
+  mysql_db:
+    name: "{{ mysql_zabbix_database }}"
+    state: import
+    target: "{{ mysql_schema_script }}"
+    login_user: "{{ mysql_zabbix_username }}"
+    login_password: "{{ mysql_zabbix_password }}"
+  when: mysql_db_created.changed
