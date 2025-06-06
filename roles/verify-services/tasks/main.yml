@@ -1,0 +1,40 @@
+---
+- name: check services are active
+  become: yes
+  command: systemctl is-active {{ item.name }}
+  register: result_active
+  changed_when: false
+  failed_when: result_active.stdout != 'active'
+  loop: "{{ verify_services }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: check services are enabled
+  become: yes
+  command: systemctl is-enabled {{ item.name }}
+  register: result_enabled
+  changed_when: false
+  failed_when: result_enabled.stdout != 'enabled'
+  loop: "{{ verify_services }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: check service logs are present
+  become: yes
+  stat:
+    path: "{{ item.log }}"
+  register: result_log
+  loop: "{{ verify_services }}"
+  loop_control:
+    label: "{{ item.log }}"
+
+- name: assert logs exist and not empty
+  assert:
+    that:
+      - result_log.results[item_index].stat.exists
+      - result_log.results[item_index].stat.size > 0
+  vars:
+    item_index: "{{ loop.index0 }}"
+  loop: "{{ verify_services }}"
+  loop_control:
+    label: "{{ item.log }}"

@@ -11,6 +11,7 @@
     - { role: zabbix-client, when: not ci_testing | default(false), tags: agent }
     - ansible-pull
     - user-management
+    - { role: verify-services, when: not ci_testing | default(false) }
 
 - hosts: zabbix-proxy
   roles:
@@ -20,6 +21,7 @@
     - { role: zabbix-client, when: not ci_testing | default(false) }
     - ansible-pull
     - user-management
+    - { role: verify-services, when: not ci_testing | default(false) }
 
 - hosts: zabbix-client
   roles:
@@ -27,6 +29,7 @@
     - { role: zabbix-client, when: not ci_testing | default(false) }
     - ansible-pull
     - user-management
+    - { role: verify-services, when: not ci_testing | default(false) }
 
 # ----------------------------------------------------------------------
 # eof

@@ -2,7 +2,9 @@ Zabbix Deployment with [Ansible](http://docs.ansible.com/playbooks.html)
 ========================================================================
 
 This repository contains a minimal set of roles that install and
-configure a complete Zabbix environment on Ubuntu 24.04 hosts.  It can
+configure a complete Zabbix environment on Ubuntu 24.04 hosts.  Zabbix and MariaDB
+packages for Noble are not yet published so the playbook automatically
+uses the Jammy repositories.  It can
 deploy the following components:
 
 * Zabbix server
@@ -112,6 +114,10 @@ users_absent:
 
 Run the playbook after editing these lists to ensure accounts are created,
 disabled or removed accordingly.
+
+After all roles run the `verify-services` role checks that the Zabbix services
+are active, enabled and writing logs. Any failures will stop the playbook with
+an error.
 
 ### Note
 
