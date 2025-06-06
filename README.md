@@ -2,11 +2,11 @@ Zabbix Deployment with [Ansible](http://docs.ansible.com/playbooks.html)
 ========================================================================
 
 This repository contains a minimal set of roles that install and
-configure a complete Zabbix environment on Ubuntu 24.04 hosts.  Zabbix 7.2
-packages are provided through the Jammy repository while Noble support is
-still in progress.  The `zabbix-repository` role configures the official apt
-repository directly rather than installing the `zabbix-release` package.
-MariaDB packages also come from the Jammy archive.
+configure a complete Zabbix environment on Ubuntu 24.04 hosts.  Zabbix 6.0
+LTS packages are provided through the Jammy repository. Noble hosts use this
+release while official packages are in development.  The `zabbix-repository`
+role configures the official apt repository directly rather than installing the
+`zabbix-release` package.  MariaDB packages also come from the Jammy archive.
 It can
 deploy the following components:
 

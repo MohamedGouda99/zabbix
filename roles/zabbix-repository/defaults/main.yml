@@ -3,7 +3,7 @@
 zabbix_installation_method:             repo
 zabbix_repo_to_add:                     True
 
-zabbix_version_major:       "7.2"
+zabbix_version_major:       "6.0"
 
 zabbix_repo_release: "{{ ansible_distribution_release }}"
 
