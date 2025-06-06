@@ -5,31 +5,31 @@
 
 - hosts: zabbix-server
   roles:
-    - mariadb
-    - { role: zabbix-repository, tags: [ server, agent ] }
-    - { role: zabbix-server, tags: server }
-    - { role: zabbix-client, tags: agent }
+    - { role: mariadb, when: not ci_testing | default(false) }
+    - { role: zabbix-repository, when: not ci_testing | default(false), tags: [ server, agent ] }
+    - { role: zabbix-server, when: not ci_testing | default(false), tags: server }
+    - { role: zabbix-client, when: not ci_testing | default(false), tags: agent }
     - ansible-pull
     - user-management
-    - verify-services
+    - { role: verify-services, when: not ci_testing | default(false) }
 
 - hosts: zabbix-proxy
   roles:
-    - mariadb
-    - zabbix-repository
-    - zabbix-proxy
-    - zabbix-client
+    - { role: mariadb, when: not ci_testing | default(false) }
+    - { role: zabbix-repository, when: not ci_testing | default(false) }
+    - { role: zabbix-proxy, when: not ci_testing | default(false) }
+    - { role: zabbix-client, when: not ci_testing | default(false) }
     - ansible-pull
     - user-management
-    - verify-services
+    - { role: verify-services, when: not ci_testing | default(false) }
 
 - hosts: zabbix-client
   roles:
-    - zabbix-repository
-    - zabbix-client
+    - { role: zabbix-repository, when: not ci_testing | default(false) }
+    - { role: zabbix-client, when: not ci_testing | default(false) }
     - ansible-pull
     - user-management
-    - verify-services
+    - { role: verify-services, when: not ci_testing | default(false) }
 
 # ----------------------------------------------------------------------
 # eof

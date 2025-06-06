@@ -8,6 +8,8 @@ remote_home_dir:            "{{ ansible_env[ 'HOME' ] }}"
 
 download_cache:             "download.cache"
 
+ci_testing:                False
+
 # ansible-pull configuration
 ansible_pull_repo: https://github.com/example/repo.git
 ansible_pull_branch: main

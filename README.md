@@ -34,7 +34,7 @@ applied automatically.
    - `users_present` / `users_absent` / `users_disabled` – user management lists
    - `mariadb_version` – MariaDB version to install (default 11.4)
 4. Adjust the **hosts** file with the inventory of servers, proxies and clients.
-5. The CI workflow runs the playbook in a Docker container with systemd so every role is executed during automated tests.
+5. The CI workflow runs the playbook with `ci_testing=true` so package installations are skipped during automated tests.
 
 ```
 > cat hosts
@@ -153,6 +153,6 @@ bootstrap a host.
 
 ### Continuous integration
 
-The repository ships with a GitHub Actions workflow that runs the entire
-playbook inside a privileged Docker container. This validates that all
-services install and start correctly on every pull request.
+The repository ships with a simple GitHub Actions workflow.  Every pull
+request runs `ansible-playbook` with `ci_testing=true` to verify the
+playbook syntax without attempting to download packages.

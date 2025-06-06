@@ -9,15 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Start test container
+      - name: Install Ansible
         run: |
-          docker run -d --name zbx-test --privileged \
-            -v ${{ github.workspace }}:/ansible -w /ansible ubuntu:24.04 \
-            /lib/systemd/systemd
-          docker exec zbx-test apt-get update
-          docker exec zbx-test apt-get install -y ansible sudo
-      - name: Run playbook inside container
-        run: docker exec zbx-test ansible-playbook -i hosts site.yml
-      - name: Cleanup
-        if: always()
-        run: docker rm -f zbx-test
+          sudo apt-get update
+          sudo apt-get install -y ansible
+      - name: Execute playbook locally
+        run: ansible-playbook -i hosts site.yml -e ci_testing=true
