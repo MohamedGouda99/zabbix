@@ -12,7 +12,7 @@
 - name: install deb package with Zabbix repo configuration
   become: yes
   apt:
-    deb: "{{ zabbix_repo_package }}"
+    deb: "{{ remote_home_dir }}/{{ zabbix_repo_package }}"
   register: zabbix_repo_config_added
 
 - name: update package data
