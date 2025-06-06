@@ -19,7 +19,7 @@ zabbix_host_templates:              "{{ [ zabbix_host_os_template ] +
                                         zabbix_host_extra_templates +
                                         zabbix_host_app_specific_templates }}"
 
-zabbix_server_templates:            "{{ [zabbix_server_os_template ] + zabbix_server_extra_template }}"
+zabbix_server_templates:            "{{ [zabbix_server_os_template ] + zabbix_server_extra_templates }}"
 
 # configuration file parameters ---------------------------------------
 
@@ -46,7 +46,7 @@ zabbix_server_config_params:
 # misc installation items ---------------------------------------------
 
 ansible_required_packages:
-  - python-pip
+  - python3-pip
 
 ansible_required_pip_packages:
   - zabbix-api

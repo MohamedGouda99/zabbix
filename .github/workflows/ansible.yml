@@ -14,4 +14,4 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible
       - name: Execute playbook locally
-        run: ansible-playbook -i hosts site.yml 
+        run: ansible-playbook -i hosts site.yml
