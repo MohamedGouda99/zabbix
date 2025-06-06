@@ -37,7 +37,7 @@ mysql_charset:                  utf8
 mysql_collation:                utf8_bin
 
 # path to the compressed schema shipped with the package
-mysql_schema_source:            "/usr/share/doc/zabbix-server-mysql/create.sql.gz"
+mysql_schema_source:            "/usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz"
 
 # location of the extracted schema used during import
 mysql_schema_script:            "{{ remote_home_dir }}/create.sql"

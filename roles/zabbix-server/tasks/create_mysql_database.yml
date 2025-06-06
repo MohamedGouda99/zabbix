@@ -44,9 +44,27 @@
     login_unix_socket: "{{ mysql_unix_socket }}"
   become: yes
 
+- name: detect Zabbix schema location
+  become: yes
+  shell: |
+    for p in /usr/share/doc/zabbix-sql-scripts/mysql/server.sql.gz \
+             /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz \
+             /usr/share/doc/zabbix-server-mysql/create.sql.gz; do
+      [ -e "$p" ] && { echo "$p"; break; }
+    done
+  args:
+    executable: /bin/bash
+  register: schema_path
+  changed_when: false
+
+- name: fail if Zabbix schema is missing
+  fail:
+    msg: "Zabbix schema file not found"
+  when: schema_path.stdout == ""
+
 - name: extract Zabbix schema
   become: yes
-  shell: "gzip -dc {{ mysql_schema_source }} > {{ mysql_schema_script }}"
+  shell: "gzip -dc {{ schema_path.stdout }} > {{ mysql_schema_script }}"
   args:
     creates: "{{ mysql_schema_script }}"
 
