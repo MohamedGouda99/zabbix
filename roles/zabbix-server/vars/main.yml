@@ -18,8 +18,8 @@ jmx_gateway_service_name:             "zabbix-java-gateway"
 #  mysql database statements
 
 mysql_ansible_package_by_os:
-  Ubuntu:       python-mysqldb
-  Debian:       python-mysqldb
+  Ubuntu:       python3-mysqldb
+  Debian:       python3-mysqldb
   RHEL:         MySQL-python
   CentOS:       MySQL-python
 
