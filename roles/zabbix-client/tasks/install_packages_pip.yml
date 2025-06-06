@@ -9,7 +9,7 @@
   become: yes
   pip: name={{ item }} state=latest
   with_items: "{{ ansible_required_pip_packages }}"
-  when: "{{ pip_installation_method == 'repo' }}"
+  when: pip_installation_method == 'repo'
 
 # -------------------------------------------------------------
 #  pip install (when in jail, err behind a firewall)
@@ -18,15 +18,15 @@
 - name: transfer Ansible required pip packages (from cache)
   copy: src="{{ docker_repo_cached }}/{{ item }}" dest="{{ ansible_user_dir }}"
   with_items: "{{ ansible_required_pip_tarballs }}"
-  when: "{{ pip_installation_method == 'download' }}"
+  when: pip_installation_method == 'download'
 
 - name: install Ansible required pip packages (from cache)
   become: yes
   pip: name="{{ ansible_user_dir }}/{{ item }}"
   with_items: "{{ ansible_required_pip_tarballs  }}"
-  when: "{{ pip_installation_method == 'download' }}"
+  when: pip_installation_method == 'download'
 
 - name: clean up Ansible required pip packages (from cache)
   file: path="{{ ansible_user_dir }}/{{ item }}" state=absent
   with_items: "{{ ansible_required_pip_tarballs }}"
-  when: "{{ pip_installation_method == 'download' }}"
+  when: pip_installation_method == 'download'

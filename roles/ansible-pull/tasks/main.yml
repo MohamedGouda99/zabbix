@@ -7,6 +7,7 @@
     content: |
       #!/bin/bash
       ansible-pull -U {{ ansible_pull_repo }} -C {{ ansible_pull_branch }}
+  when: not ci_testing | default(false)
 
 - name: create systemd unit
   become: yes
@@ -19,6 +20,7 @@
       [Service]
       Type=oneshot
       ExecStart=/usr/local/bin/run-ansible-pull.sh
+  when: not ci_testing | default(false)
 
 - name: create systemd timer
   become: yes
@@ -34,6 +36,7 @@
 
       [Install]
       WantedBy=timers.target
+  when: not ci_testing | default(false)
 
 - name: enable and start ansible-pull timer
   become: yes
@@ -41,3 +44,4 @@
     name: ansible-pull.timer
     enabled: yes
     state: started
+  when: not ci_testing | default(false)

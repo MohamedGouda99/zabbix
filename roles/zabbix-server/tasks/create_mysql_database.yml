@@ -6,7 +6,7 @@
 - name: install mysql package(s) required by ansible
   become: yes
   apt:  name="{{ mysql_ansible_package }}" state=present
-  when: "{{ ansible_pkg_mgr == 'apt' }}"
+  when: ansible_pkg_mgr == 'apt'
 
 # -------------------------------------------------------------
 #  MySQL operations
@@ -19,7 +19,7 @@
     collation: "{{ mysql_collation }}"
     login_user: root
     login_unix_socket: "{{ mysql_unix_socket }}"
-  when: "{{ zabbix_remove_stale_version | bool }}"
+  when: zabbix_remove_stale_version | bool
   become: yes
 
 - name: create MySQL database
