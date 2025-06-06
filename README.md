@@ -159,5 +159,5 @@ bootstrap a host.
 ### Continuous integration
 
 The repository ships with a simple GitHub Actions workflow.  Every pull
-request runs `ansible-playbook` with `ci_testing=true` to verify the
-playbook syntax without performing package installations or starting services.
+request runs `ansible-playbook --syntax-check` to verify the playbook
+without performing package installations or starting services.
