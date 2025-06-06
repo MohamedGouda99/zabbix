@@ -9,12 +9,15 @@
   apt_key: data="{{ lookup('file', 'zabbix.pgp') }}" state=present
   when: "{{ zabbix_repo_to_add }}"
 
-- name: install deb package with Zabbix repo configuration
+- name: ensure Zabbix apt repository is configured
   become: yes
-  apt: deb="{{ zabbix_repo_package }}"
-  register: zabbix_repo_config_added
+  apt_repository:
+    repo: "deb [arch=amd64] https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/ubuntu {{ zabbix_repo_release }} main"
+    filename: zabbix
+    state: present
+  when: zabbix_repo_to_add
 
 - name: update package data
   become: yes
   apt: update_cache=yes
-  when: "{{ zabbix_repo_config_added.changed }}"
+  when: zabbix_repo_to_add

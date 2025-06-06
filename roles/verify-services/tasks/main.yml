@@ -38,3 +38,13 @@
   loop: "{{ verify_services }}"
   loop_control:
     label: "{{ item.log }}"
+
+- name: check log contains startup entry
+  become: yes
+  command: grep -i "started" {{ item.log }}
+  changed_when: false
+  register: log_grep
+  failed_when: log_grep.rc != 0
+  loop: "{{ verify_services }}"
+  loop_control:
+    label: "{{ item.log }}"

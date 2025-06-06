@@ -12,7 +12,7 @@ zabbix_version:             "{{ zabbix_version_major }}-{{ zabbix_version_minor 
 zabbix_repo_release: "{{ ansible_distribution_release }}"
 
 zabbix_repo_package_url_by_os:
-  Ubuntu:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/ubuntu/pool/main/z/zabbix-release/zabbix-release_{{ zabbix_version }}+{{ zabbix_repo_release }}_all.deb"
+  Ubuntu:       none
   Debian:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/debian/pool/main/z/zabbix-release/zabbix-release_{{ zabbix_version }}+{{ zabbix_repo_release }}_all.deb"
   RedHat:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/rhel/{{ ansible_distribution_major_version }}/x86_64/zabbix-release-{{ zabbix_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
   CentOS:       "https://repo.zabbix.com/zabbix/{{ zabbix_version_major }}/rhel/{{ ansible_distribution_major_version }}/x86_64/zabbix-release-{{ zabbix_version }}.el{{ ansible_distribution_major_version }}.noarch.rpm"
