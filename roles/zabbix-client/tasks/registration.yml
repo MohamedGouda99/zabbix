@@ -2,7 +2,7 @@
 # Register new Zabbix client with server
 
 - include_tasks: pre_requisites.yml
-  when: "{{ zabbix_api_connection_method == 'ssh' }}"
+  when: zabbix_api_connection_method == 'ssh'
 
 - name: create Zabbix host groups
   connection: "{{ zabbix_api_connection_method }}"
@@ -21,7 +21,7 @@
                 login_password="{{ zabbix_server_password }}"
                 state=absent
   with_items: "{{ groups[ 'zabbix-server' ] }}"
-  when: "{{ zabbix_remove_stale_version | bool }}"
+  when: zabbix_remove_stale_version | bool
 
 - name: create Zabbix host
   connection: "{{ zabbix_api_connection_method }}"

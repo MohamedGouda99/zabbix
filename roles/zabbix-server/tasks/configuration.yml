@@ -33,7 +33,7 @@
               regexp="^[#\s]*{{ item.key }}\s*="
               line="{{ item.key }}={{ item.value }}"
   with_dict: "{{ zabbix_jmx_gateway_config_params }}"
-  when: "{{ zabbix_jmx_gateway | bool }}"
+  when: zabbix_jmx_gateway | bool
   notify:
     - restart zabbix server
 
@@ -43,6 +43,6 @@
               regexp="^[#\s]*{{ item.key }}\s*="
               line="{{ item.key }}={{ item.value }}"
   with_dict: "{{ jmx_gateway_config_params }}"
-  when: "{{ zabbix_jmx_gateway | bool }}"
+  when: zabbix_jmx_gateway | bool
   notify:
     - restart jmx gateway
