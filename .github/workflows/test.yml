@@ -17,8 +17,7 @@ jobs:
           MYSQL_PASSWORD: zabbix
         ports:
           - 3306:3306
-        options: >-
-          --restart always
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot" --health-interval=10s --health-timeout=5s --health-retries=5
 
     steps:
       - uses: actions/checkout@v3
@@ -31,7 +30,7 @@ jobs:
               echo "✅ MariaDB is ready!"
               break
             fi
-            echo "Waiting for MariaDB..."
+            echo "⏳ Waiting for MariaDB..."
             sleep 2
           done
 
