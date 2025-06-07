@@ -59,6 +59,11 @@ cat > site.yml <<'EOF'
   become: true
   collections:
     - community.zabbix
+  vars:
+    zabbix_server_database:
+      type: mysql
+    zabbix_proxy_database:
+      type: mysql
   tasks:
 
     - name: Install Zabbix Repo
@@ -74,8 +79,6 @@ cat > site.yml <<'EOF'
         zabbix_server_dbuser: zabbix
         zabbix_server_dbpassword: zabbix
         zabbix_server_dbport: 3306
-        zabbix_server_dbtype: mysql
-        zabbix_server_database_type: mysql
         zabbix_server_create_db: false
 
     - name: Install Zabbix Web UI
@@ -104,8 +107,6 @@ cat > site.yml <<'EOF'
         zabbix_proxy_dbuser: zabbix
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
-        zabbix_proxy_dbtype: mysql
-        zabbix_proxy_database_type: mysql
         zabbix_proxy_create_db: false
 
     - name: Install Zabbix Agent
