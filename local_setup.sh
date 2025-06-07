@@ -10,18 +10,8 @@ echo "📁 Creating Ansible project directory..."
 mkdir -p ~/zabbix-local-setup
 cd ~/zabbix-local-setup
 
-echo "📄 Writing requirements.yml..."
-cat > requirements.yml <<'R'
-roles:
-  - name: community.zabbix.zabbix_repo
-  - name: community.zabbix.zabbix_server
-  - name: community.zabbix.zabbix_web
-  - name: community.zabbix.zabbix_proxy
-  - name: community.zabbix.zabbix_agent
-R
-
-echo "⬇️ Installing Ansible Galaxy roles..."
-ansible-galaxy install -r requirements.yml
+echo "⬇️ Installing Ansible Galaxy collection..."
+ansible-galaxy collection install community.zabbix
 
 echo "📄 Writing inventory.ini..."
 cat > inventory.ini <<'R'
@@ -32,13 +22,7 @@ R
 echo "📄 Writing site.yml playbook..."
 cat > site.yml <<'R'
 ---
-- name: Setup Zabbix Repositories
-  hosts: localhost
-  become: true
-  roles:
-    - community.zabbix.zabbix_repo
-
-- name: Install Zabbix Server
+  - name: Install Zabbix Server
   hosts: localhost
   become: true
   vars:

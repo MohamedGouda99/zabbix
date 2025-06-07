@@ -1,6 +1,2 @@
-roles:
-  - name: community.zabbix.zabbix_repo
-  - name: community.zabbix.zabbix_server
-  - name: community.zabbix.zabbix_web
-  - name: community.zabbix.zabbix_proxy
-  - name: community.zabbix.zabbix_agent
+collections:
+  - name: community.zabbix

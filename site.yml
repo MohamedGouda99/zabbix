@@ -1,13 +1,10 @@
 ---
-- name: Setup Zabbix Repositories
-  hosts: localhost
-  become: true
-  roles:
-    - community.zabbix.zabbix_repo
 
 - name: Install Zabbix Server
   hosts: localhost
   become: true
+  collections:
+    - community.zabbix
   vars:
     zabbix_server_dbhost: localhost
     zabbix_server_dbname: zabbix
@@ -17,11 +14,13 @@
     zabbix_server_create_db: true
     zabbix_server_dbtype: mysql
   roles:
-    - community.zabbix.zabbix_server
+    - zabbix_server
 
 - name: Install Zabbix Web UI
   hosts: localhost
   become: true
+  collections:
+    - community.zabbix
   vars:
     zabbix_web_server: apache
     zabbix_web_dbhost: localhost
@@ -33,11 +32,13 @@
     zabbix_web_language: en_US
     zabbix_web_dbtype: mysql
   roles:
-    - community.zabbix.zabbix_web
+    - zabbix_web
 
 - name: Install Zabbix Proxy
   hosts: localhost
   become: true
+  collections:
+    - community.zabbix
   vars:
     zabbix_proxy_mode: active
     zabbix_server_host: localhost
@@ -49,14 +50,16 @@
     zabbix_proxy_create_db: true
     zabbix_proxy_dbtype: mysql
   roles:
-    - community.zabbix.zabbix_proxy
+    - zabbix_proxy
 
 - name: Install Zabbix Agent
   hosts: localhost
   become: true
+  collections:
+    - community.zabbix
   vars:
     zabbix_agent_server: localhost
     zabbix_agent_listenport: 10050
     zabbix_agent_hostname: localhost
   roles:
-    - community.zabbix.zabbix_agent
+    - zabbix_agent
