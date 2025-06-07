@@ -74,6 +74,7 @@ cat > site.yml <<'YAML'
         zabbix_server_dbpassword: zabbix
         zabbix_server_dbport: 3306
         zabbix_server_dbtype: mysql
+        zabbix_server_database_type: mysql
         zabbix_server_create_db: false
 
     - name: Install Zabbix Web UI
@@ -89,6 +90,7 @@ cat > site.yml <<'YAML'
         zabbix_web_timezone: Europe/Cairo
         zabbix_web_language: en_US
         zabbix_web_dbtype: mysql
+        zabbix_web_database_type: mysql
 
     - name: Install Zabbix Proxy
       import_role:
@@ -102,6 +104,7 @@ cat > site.yml <<'YAML'
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
         zabbix_proxy_dbtype: mysql
+        zabbix_proxy_database_type: mysql
         zabbix_proxy_create_db: false
 
     - name: Install Zabbix Agent
