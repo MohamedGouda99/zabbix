@@ -62,7 +62,9 @@ cat > site.yml <<'EOF'
   vars:
     zabbix_server_database: mysql
     zabbix_proxy_database: mysql
+    zabbix_server_create_db: false
     zabbix_server_skip_db_setup: true
+    zabbix_proxy_create_db: false
     zabbix_proxy_skip_db_setup: true
   tasks:
 
@@ -85,7 +87,6 @@ cat > site.yml <<'EOF'
         zabbix_server_dbuser: zabbix
         zabbix_server_dbpassword: zabbix
         zabbix_server_dbport: 3306
-        zabbix_server_create_db: false
 
     - name: Install Zabbix Web UI
       import_role:
@@ -113,7 +114,6 @@ cat > site.yml <<'EOF'
         zabbix_proxy_dbuser: zabbix
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
-        zabbix_proxy_create_db: false
 
     - name: Install Zabbix Agent
       import_role:
