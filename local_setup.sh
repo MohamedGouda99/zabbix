@@ -1,39 +1,21 @@
 #!/bin/bash
-
 set -e
 
 echo "📦 Installing Ansible and dependencies..."
-sudo apt update -y
-sudo apt install -y software-properties-common curl gnupg2 lsb-release ca-certificates apt-transport-https
+sudo apt-get update -y
+sudo apt-get install -y software-properties-common curl gnupg2 lsb-release ca-certificates apt-transport-https python3-pymysql
 
 echo "📦 Adding Ansible PPA..."
 sudo add-apt-repository --yes --update ppa:ansible/ansible
-sudo apt update -y
-sudo apt install -y ansible
+sudo apt-get update -y
+sudo apt-get install -y ansible
 
-# Confirm Ansible is installed
-if ! command -v ansible-galaxy >/dev/null 2>&1; then
-  echo "❌ Ansible was not installed correctly or ansible-galaxy not found in PATH."
-  exit 1
-fi
-
-echo "📁 Installing MariaDB 11.4 APT repo..."
-curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-11.4"
-
-echo "📦 Installing MariaDB Server..."
-sudo apt update -y
-sudo apt install -y mariadb-server mariadb-client python3-pymysql
-
-echo "🚀 Starting and enabling MariaDB..."
-sudo systemctl enable mariadb
-sudo systemctl restart mariadb
+echo "⬇️ Installing Ansible Galaxy Zabbix collection..."
+ansible-galaxy collection install community.zabbix
 
 echo "📁 Creating Ansible project directory..."
 mkdir -p ~/zabbix-local-setup
 cd ~/zabbix-local-setup
-
-echo "⬇️ Installing Ansible Galaxy Zabbix collection..."
-ansible-galaxy collection install community.zabbix
 
 echo "📄 Writing inventory.ini..."
 cat > inventory.ini <<EOF
@@ -56,15 +38,8 @@ cat > site.yml <<'EOF'
     zabbix_proxy_dbname: zabbix_proxy
     zabbix_proxy_dbuser: zabbix
     zabbix_proxy_dbpassword: zabbix
-    zabbix_proxy_manage_database: true  # ✅ Enable automatic DB creation
+    zabbix_proxy_manage_database: true
   tasks:
-
-    - name: Ensure MariaDB is running
-      service:
-        name: mariadb
-        state: started
-        enabled: true
-
     - name: Install Zabbix Repo
       import_role:
         name: zabbix_repo
