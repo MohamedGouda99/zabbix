@@ -60,10 +60,8 @@ cat > site.yml <<'EOF'
   collections:
     - community.zabbix
   vars:
-    zabbix_server_database:
-      type: mysql
-    zabbix_proxy_database:
-      type: mysql
+    zabbix_server_database: mysql
+    zabbix_proxy_database: mysql
   tasks:
 
     - name: Install Zabbix Repo
