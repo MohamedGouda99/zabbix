@@ -59,8 +59,6 @@ cat > site.yml <<'EOF'
     - community.zabbix
   vars:
     zabbix_proxy_database: mysql
-    zabbix_proxy_create_db: false
-    zabbix_proxy_skip_db_setup: true
   tasks:
 
     - name: Ensure MariaDB is running
@@ -94,7 +92,7 @@ cat > site.yml <<'EOF'
         zabbix_agent_hostname: localhost
 EOF
 
-echo "🚀 Running Ansible playbook (Proxy + Agent only)..."
+echo "🚀 Running Ansible playbook with --skip-tags=zabbix_database..."
 ansible-playbook -i inventory.ini site.yml --skip-tags=zabbix_database
 
 echo "✅ Zabbix Proxy + Agent installation complete on localhost!"
