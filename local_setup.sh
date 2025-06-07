@@ -62,7 +62,15 @@ cat > site.yml <<'EOF'
   vars:
     zabbix_server_database: mysql
     zabbix_proxy_database: mysql
+    zabbix_server_skip_db_setup: true
+    zabbix_proxy_skip_db_setup: true
   tasks:
+
+    - name: Ensure MariaDB is running
+      service:
+        name: mariadb
+        state: started
+        enabled: true
 
     - name: Install Zabbix Repo
       import_role:
@@ -78,7 +86,6 @@ cat > site.yml <<'EOF'
         zabbix_server_dbpassword: zabbix
         zabbix_server_dbport: 3306
         zabbix_server_create_db: false
-        zabbix_server_skip_db_setup: true
 
     - name: Install Zabbix Web UI
       import_role:
@@ -107,7 +114,6 @@ cat > site.yml <<'EOF'
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
         zabbix_proxy_create_db: false
-        zabbix_proxy_skip_db_setup: true
 
     - name: Install Zabbix Agent
       import_role:
