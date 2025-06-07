@@ -11,7 +11,7 @@ sudo add-apt-repository --yes --update ppa:ansible/ansible
 sudo apt update -y
 sudo apt install -y ansible
 
-# Confirm ansible is installed
+# Confirm Ansible is installed
 if ! command -v ansible-galaxy >/dev/null 2>&1; then
   echo "❌ Ansible was not installed correctly or ansible-galaxy not found in PATH."
   exit 1
@@ -46,13 +46,13 @@ echo "⬇️ Installing Ansible Galaxy Zabbix collection..."
 ansible-galaxy collection install community.zabbix
 
 echo "📄 Writing inventory.ini..."
-cat > inventory.ini <<'INI'
+cat > inventory.ini <<EOF
 [all]
 localhost ansible_connection=local
-INI
+EOF
 
 echo "📄 Writing site.yml playbook..."
-cat > site.yml <<'YAML'
+cat > site.yml <<'EOF'
 ---
 - name: Full Zabbix Stack on Localhost
   hosts: localhost
@@ -60,6 +60,7 @@ cat > site.yml <<'YAML'
   collections:
     - community.zabbix
   tasks:
+
     - name: Install Zabbix Repo
       import_role:
         name: zabbix_repo
@@ -114,7 +115,7 @@ cat > site.yml <<'YAML'
         zabbix_agent_server: localhost
         zabbix_agent_listenport: 10050
         zabbix_agent_hostname: localhost
-YAML
+EOF
 
 echo "🚀 Running Ansible playbook..."
 ansible-playbook -i inventory.ini site.yml
