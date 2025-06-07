@@ -22,17 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Wait for MariaDB to be ready
-        run: |
-          sudo apt-get update && sudo apt-get install -y mariadb-client
-          for i in {1..30}; do
-            if mysqladmin ping -h 127.0.0.1 -uroot -proot --silent; then
-              echo "✅ MariaDB is ready!"
-              break
-            fi
-            echo "⏳ Waiting for MariaDB..."
-            sleep 2
-          done
+   
 
       - name: Run local setup script
         run: |
