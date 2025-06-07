@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     name: Deploy Zabbix Proxy and Agent
-    runs-on: self-hosted  # Ensure runner is Ubuntu 24.04 with sudo privileges
+    runs-on: ubuntu-latest  # Ensure runner is Ubuntu 24.04 with sudo privileges
 
     steps:
       - name: 📥 Checkout Repository
