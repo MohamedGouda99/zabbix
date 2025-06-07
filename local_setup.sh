@@ -22,7 +22,7 @@ curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- -
 
 echo "📦 Installing MariaDB Server..."
 sudo apt update -y
-sudo apt install -y mariadb-server mariadb-client
+sudo apt install -y mariadb-server mariadb-client python3-pymysql
 
 echo "🚀 Starting and enabling MariaDB..."
 sudo systemctl enable mariadb
@@ -78,6 +78,7 @@ cat > site.yml <<'EOF'
         zabbix_server_dbpassword: zabbix
         zabbix_server_dbport: 3306
         zabbix_server_create_db: false
+        zabbix_server_skip_db_setup: true
 
     - name: Install Zabbix Web UI
       import_role:
@@ -106,6 +107,7 @@ cat > site.yml <<'EOF'
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
         zabbix_proxy_create_db: false
+        zabbix_proxy_skip_db_setup: true
 
     - name: Install Zabbix Agent
       import_role:
