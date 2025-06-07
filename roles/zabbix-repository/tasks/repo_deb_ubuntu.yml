@@ -4,10 +4,10 @@
 # -------------------------------------------------------------
 #  2. add repository configuration
 
-- name: download Zabbix GPG key
+- name: install Zabbix GPG key
   become: yes
-  get_url:
-    url: https://repo.zabbix.com/zabbix-official-repo.key
+  copy:
+    src: zabbix.pgp
     dest: /tmp/zabbix.asc
     mode: '0644'
   when: zabbix_repo_to_add

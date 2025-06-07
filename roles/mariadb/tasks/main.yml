@@ -1,8 +1,8 @@
 ---
-- name: Download MariaDB GPG key
+- name: install MariaDB GPG key
   become: yes
-  get_url:
-    url: https://mariadb.org/mariadb_release_signing_key.asc
+  copy:
+    src: mariadb.pgp
     dest: /tmp/mariadb.asc
     mode: '0644'
   when: ansible_pkg_mgr == 'apt'
