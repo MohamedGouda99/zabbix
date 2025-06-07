@@ -7,7 +7,6 @@ on:
 jobs:
   run-playbook:
     runs-on: ubuntu-latest
-
     services:
       mariadb:
         image: mariadb:11.4
@@ -19,24 +18,20 @@ jobs:
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          --restart always
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Wait for MariaDB to be ready
         run: |
-          echo "⏳ Waiting for MariaDB to be ready..."
+          sudo apt-get update && sudo apt-get install -y mariadb-client
           for i in {1..30}; do
             if mysqladmin ping -h 127.0.0.1 -uroot -proot --silent; then
               echo "✅ MariaDB is ready!"
               break
             fi
-            echo "Waiting..."
+            echo "Waiting for MariaDB..."
             sleep 2
           done
 
