@@ -28,14 +28,6 @@ echo "🚀 Starting and enabling MariaDB..."
 sudo systemctl enable mariadb
 sudo systemctl restart mariadb
 
-echo "🔐 Creating Zabbix Proxy database and user..."
-sudo mysql -u root <<EOF
-CREATE DATABASE IF NOT EXISTS zabbix_proxy CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
-CREATE USER IF NOT EXISTS 'zabbix'@'localhost' IDENTIFIED BY 'zabbix';
-GRANT ALL PRIVILEGES ON zabbix_proxy.* TO 'zabbix'@'localhost';
-FLUSH PRIVILEGES;
-EOF
-
 echo "📁 Creating Ansible project directory..."
 mkdir -p ~/zabbix-local-setup
 cd ~/zabbix-local-setup
@@ -59,6 +51,12 @@ cat > site.yml <<'EOF'
     - community.zabbix
   vars:
     zabbix_proxy_database: mysql
+    zabbix_proxy_dbhost: 127.0.0.1
+    zabbix_proxy_dbport: 3306
+    zabbix_proxy_dbname: zabbix_proxy
+    zabbix_proxy_dbuser: zabbix
+    zabbix_proxy_dbpassword: zabbix
+    zabbix_proxy_manage_database: true  # ✅ Enable automatic DB creation
   tasks:
 
     - name: Ensure MariaDB is running
@@ -77,12 +75,6 @@ cat > site.yml <<'EOF'
       vars:
         zabbix_proxy_mode: active
         zabbix_server_host: 127.0.0.1
-        zabbix_proxy_dbhost: 127.0.0.1
-        zabbix_proxy_dbname: zabbix_proxy
-        zabbix_proxy_dbuser: zabbix
-        zabbix_proxy_dbpassword: zabbix
-        zabbix_proxy_dbport: 3306
-        zabbix_proxy_manage_database: false  # ✅ Prevent DB creation via Ansible
 
     - name: Install Zabbix Agent
       import_role:
@@ -96,4 +88,4 @@ EOF
 echo "🚀 Running Ansible playbook..."
 ansible-playbook -i inventory.ini site.yml
 
-echo "✅ Zabbix Proxy + Agent installation complete on localhost!"
+echo "✅ Zabbix Proxy + Agent (with DB) setup completed via Ansible!"
