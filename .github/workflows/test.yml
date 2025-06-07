@@ -5,25 +5,16 @@ on:
   pull_request:
 
 jobs:
-  run-playbook:
-    runs-on: ubuntu-latest
-    services:
-      mariadb:
-        image: mariadb:11.4
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: zabbix_proxy
-          MYSQL_USER: zabbix
-          MYSQL_PASSWORD: zabbix
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot" --health-interval=10s --health-timeout=5s --health-retries=5
+  deploy:
+    name: Deploy Zabbix Proxy and Agent
+    runs-on: self-hosted  # Ensure runner is Ubuntu 24.04 with sudo privileges
 
     steps:
-      - uses: actions/checkout@v3
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
 
-   
+      - name: 🔒 Make install script executable
+        run: chmod +x install_zabbix.sh
 
-      - name: Run local setup script
-        run: |
-          sudo bash ./local_setup.sh
+      - name: 🚀 Run Zabbix deployment script
+        run: sudo ./local_setup.sh
