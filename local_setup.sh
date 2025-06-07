@@ -59,7 +59,6 @@ cat > site.yml <<'EOF'
     - community.zabbix
   vars:
     zabbix_proxy_database: mysql
-    zabbix_skip_database_setup: true  # Avoid built-in DB init
   tasks:
 
     - name: Ensure MariaDB is running
@@ -83,6 +82,7 @@ cat > site.yml <<'EOF'
         zabbix_proxy_dbuser: zabbix
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
+        zabbix_proxy_manage_database: false  # ✅ Prevent DB creation via Ansible
 
     - name: Install Zabbix Agent
       import_role:
@@ -93,7 +93,7 @@ cat > site.yml <<'EOF'
         zabbix_agent_hostname: localhost
 EOF
 
-echo "🚀 Running Ansible playbook (proxy + agent only, skipping DB)..."
+echo "🚀 Running Ansible playbook..."
 ansible-playbook -i inventory.ini site.yml
 
 echo "✅ Zabbix Proxy + Agent installation complete on localhost!"
