@@ -1,2 +1,0 @@
----
-mariadb_repo_release: "{{ ansible_distribution_release }}"

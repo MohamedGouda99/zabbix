@@ -1,3 +1,36 @@
+#!/bin/bash
+
+set -e
+
+echo "📦 Installing Ansible..."
+sudo apt update -y
+sudo apt install -y ansible
+
+echo "📁 Creating Ansible project directory..."
+mkdir -p ~/zabbix-local-setup
+cd ~/zabbix-local-setup
+
+echo "📄 Writing requirements.yml..."
+cat > requirements.yml <<'R'
+roles:
+  - name: community.zabbix.zabbix_repo
+  - name: community.zabbix.zabbix_server
+  - name: community.zabbix.zabbix_web
+  - name: community.zabbix.zabbix_proxy
+  - name: community.zabbix.zabbix_agent
+R
+
+echo "⬇️ Installing Ansible Galaxy roles..."
+ansible-galaxy install -r requirements.yml
+
+echo "📄 Writing inventory.ini..."
+cat > inventory.ini <<'R'
+[all]
+localhost ansible_connection=local
+R
+
+echo "📄 Writing site.yml playbook..."
+cat > site.yml <<'R'
 ---
 - name: Setup Zabbix Repositories
   hosts: localhost
@@ -60,3 +93,9 @@
     zabbix_agent_hostname: localhost
   roles:
     - community.zabbix.zabbix_agent
+R
+
+echo "🚀 Running Ansible playbook..."
+ansible-playbook -i inventory.ini site.yml
+
+echo "✅ Zabbix installation complete on localhost!"

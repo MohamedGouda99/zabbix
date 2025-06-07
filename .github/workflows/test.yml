@@ -1,0 +1,14 @@
+name: Local Zabbix test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run-playbook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run local setup script
+        run: |
+          sudo bash ./local_setup.sh

@@ -1,5 +1,0 @@
----
-# Additional variables for zabbix proxy
-mariadb_packages:
-  - mariadb-server
-  - mariadb-client
