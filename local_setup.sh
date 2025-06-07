@@ -148,7 +148,7 @@ cat > roles/zabbix-proxy/tasks/main.yml <<'EOF'
     owner: root
     group: root
     mode: 0644
-  notify: Restart Zabbix Proxy
+  # notify: Restart Zabbix Proxy
 EOF
 
 echo "� Creating user-management role tasks..."
