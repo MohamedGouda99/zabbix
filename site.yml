@@ -1,35 +1,65 @@
 ---
-# ----------------------------------------------------------------------
-#                           Zabbix Installation
-# ----------------------------------------------------------------------
 
-- hosts: zabbix-server
+- name: Install Zabbix Server
+  hosts: localhost
+  become: true
+  collections:
+    - community.zabbix
+  vars:
+    zabbix_server_dbhost: localhost
+    zabbix_server_dbname: zabbix
+    zabbix_server_dbuser: zabbix
+    zabbix_server_dbpassword: zabbix
+    zabbix_server_dbport: 3306
+    zabbix_server_create_db: true
+    zabbix_server_dbtype: mysql
   roles:
-    - { role: mariadb, when: not ci_testing | default(false) }
-    - { role: zabbix-repository, when: not ci_testing | default(false), tags: [ server, agent ] }
-    - { role: zabbix-server, when: not ci_testing | default(false), tags: server }
-    - { role: zabbix-client, when: not ci_testing | default(false), tags: agent }
-    - ansible-pull
-    - user-management
-    - { role: verify-services, when: not ci_testing | default(false) }
+    - zabbix_server
 
-- hosts: zabbix-proxy
+- name: Install Zabbix Web UI
+  hosts: localhost
+  become: true
+  collections:
+    - community.zabbix
+  vars:
+    zabbix_web_server: apache
+    zabbix_web_dbhost: localhost
+    zabbix_web_dbname: zabbix
+    zabbix_web_dbuser: zabbix
+    zabbix_web_dbpassword: zabbix
+    zabbix_web_dbport: 3306
+    zabbix_web_timezone: Europe/Cairo
+    zabbix_web_language: en_US
+    zabbix_web_dbtype: mysql
   roles:
-    - { role: mariadb, when: not ci_testing | default(false) }
-    - { role: zabbix-repository, when: not ci_testing | default(false) }
-    - { role: zabbix-proxy, when: not ci_testing | default(false) }
-    - { role: zabbix-client, when: not ci_testing | default(false) }
-    - ansible-pull
-    - user-management
-    - { role: verify-services, when: not ci_testing | default(false) }
+    - zabbix_web
 
-- hosts: zabbix-client
+- name: Install Zabbix Proxy
+  hosts: localhost
+  become: true
+  collections:
+    - community.zabbix
+  vars:
+    zabbix_proxy_mode: active
+    zabbix_server_host: localhost
+    zabbix_proxy_dbhost: localhost
+    zabbix_proxy_dbname: zabbix_proxy
+    zabbix_proxy_dbuser: zabbix
+    zabbix_proxy_dbpassword: zabbix
+    zabbix_proxy_dbport: 3306
+    zabbix_proxy_create_db: true
+    zabbix_proxy_dbtype: mysql
   roles:
-    - { role: zabbix-repository, when: not ci_testing | default(false) }
-    - { role: zabbix-client, when: not ci_testing | default(false) }
-    - ansible-pull
-    - user-management
-    - { role: verify-services, when: not ci_testing | default(false) }
+    - zabbix_proxy
 
-# ----------------------------------------------------------------------
-# eof
+- name: Install Zabbix Agent
+  hosts: localhost
+  become: true
+  collections:
+    - community.zabbix
+  vars:
+    zabbix_agent_server: localhost
+    zabbix_agent_listenport: 10050
+    zabbix_agent_hostname: localhost
+  roles:
+    - zabbix_agent

@@ -1,0 +1,20 @@
+name: Local Zabbix Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  deploy:
+    name: Deploy Zabbix Proxy and Agent
+    runs-on: ubuntu-latest  # Ensure runner is Ubuntu 24.04 with sudo privileges
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔒 Make install script executable
+        run: chmod +x local_setup.sh
+
+      - name: 🚀 Run Zabbix deployment script
+        run: sudo ./local_setup.sh

@@ -1,4 +1,0 @@
----
-ansible_pull_repo: https://github.com/example/repo.git
-ansible_pull_branch: main
-ansible_pull_frequency: '1h'
