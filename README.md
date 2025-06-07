@@ -159,5 +159,5 @@ bootstrap a host.
 ### Continuous integration
 
 The repository ships with a simple GitHub Actions workflow.  Every pull
-request performs an Ansible syntax check to verify the playbook without
-installing packages or modifying the runner.
+request runs the playbook on an Ubuntu runner to verify that all packages
+install correctly and Zabbix services start as expected.
