@@ -2,9 +2,9 @@
 
 This repository installs a complete Zabbix environment on a single host using
 the `community.zabbix` collection from [Ansible Galaxy](https://galaxy.ansible.com/).
-The provided `local_setup.sh` script creates a temporary project directory,
-installs the collection and runs a playbook that deploys
-Zabbix server, web, proxy and agent components on `localhost`.
+The provided `local_setup.sh` script installs MariaDB 11.4, creates the Zabbix
+databases and then runs an Ansible playbook that deploys the Zabbix server,
+web UI, proxy and agent components on `localhost`.
 
 ## Usage
 

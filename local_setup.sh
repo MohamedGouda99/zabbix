@@ -4,26 +4,44 @@ set -e
 
 echo "📦 Installing Ansible and dependencies..."
 sudo apt update -y
-sudo apt install -y software-properties-common
-sudo apt-add-repository --yes --update ppa:ansible/ansible
-sudo apt install -y ansible
+sudo apt install -y software-properties-common curl gnupg2 lsb-release ca-certificates apt-transport-https
+
+echo "📁 Installing MariaDB 11.4 APT repo..."
+curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | sudo bash -s -- --mariadb-server-version="mariadb-11.4"
+
+echo "📦 Installing MariaDB Server..."
+sudo apt update -y
+sudo apt install -y mariadb-server mariadb-client
+
+echo "🚀 Starting and enabling MariaDB..."
+sudo systemctl enable mariadb
+sudo systemctl restart mariadb
+
+echo "🔐 Securing MariaDB and creating Zabbix databases..."
+sudo mysql -u root <<'SQL'
+CREATE DATABASE IF NOT EXISTS zabbix CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE DATABASE IF NOT EXISTS zabbix_proxy CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+CREATE USER IF NOT EXISTS 'zabbix'@'localhost' IDENTIFIED BY 'zabbix';
+GRANT ALL PRIVILEGES ON zabbix.* TO 'zabbix'@'localhost';
+GRANT ALL PRIVILEGES ON zabbix_proxy.* TO 'zabbix'@'localhost';
+FLUSH PRIVILEGES;
+SQL
 
 echo "📁 Creating Ansible project directory..."
 mkdir -p ~/zabbix-local-setup
 cd ~/zabbix-local-setup
 
-echo "⬇️ Installing Ansible Galaxy collection..."
+echo "⬇️ Installing Ansible Galaxy Zabbix collection..."
 ansible-galaxy collection install community.zabbix
 
 echo "📄 Writing inventory.ini..."
-cat > inventory.ini <<'R'
+cat > inventory.ini <<'INI'
 [all]
 localhost ansible_connection=local
-R
-
+INI
 
 echo "📄 Writing site.yml playbook..."
-cat > site.yml <<'R'
+cat > site.yml <<'YAML'
 ---
 - name: Full Zabbix Stack on Localhost
   hosts: localhost
@@ -44,8 +62,8 @@ cat > site.yml <<'R'
         zabbix_server_dbuser: zabbix
         zabbix_server_dbpassword: zabbix
         zabbix_server_dbport: 3306
-        zabbix_server_create_db: true
         zabbix_server_dbtype: mysql
+        zabbix_server_create_db: false
 
     - name: Install Zabbix Web UI
       import_role:
@@ -72,8 +90,8 @@ cat > site.yml <<'R'
         zabbix_proxy_dbuser: zabbix
         zabbix_proxy_dbpassword: zabbix
         zabbix_proxy_dbport: 3306
-        zabbix_proxy_create_db: true
         zabbix_proxy_dbtype: mysql
+        zabbix_proxy_create_db: false
 
     - name: Install Zabbix Agent
       import_role:
@@ -82,10 +100,9 @@ cat > site.yml <<'R'
         zabbix_agent_server: localhost
         zabbix_agent_listenport: 10050
         zabbix_agent_hostname: localhost
-R
+YAML
 
 echo "🚀 Running Ansible playbook..."
 ansible-playbook -i inventory.ini site.yml
 
 echo "✅ Zabbix all-in-one local setup complete!"
-
