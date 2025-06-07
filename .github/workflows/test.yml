@@ -1,4 +1,4 @@
-name: Local Zabbix test
+name: Local Zabbix Test
 
 on:
   push:
@@ -7,8 +7,39 @@ on:
 jobs:
   run-playbook:
     runs-on: ubuntu-latest
+
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: zabbix_proxy
+          MYSQL_USER: zabbix
+          MYSQL_PASSWORD: zabbix
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Wait for MariaDB to be ready
+        run: |
+          echo "⏳ Waiting for MariaDB to be ready..."
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -uroot -proot --silent; then
+              echo "✅ MariaDB is ready!"
+              break
+            fi
+            echo "Waiting..."
+            sleep 2
+          done
+
       - name: Run local setup script
         run: |
           sudo bash ./local_setup.sh
